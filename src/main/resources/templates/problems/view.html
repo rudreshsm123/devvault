@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2 th:text="${problem.title}"></h2>
+            <a th:href="@{/problems/{id}/edit(id=${problem.id})}" class="btn-primary">Edit</a>
+        </div>
+
+        <dl class="detail-list">
+            <dt>Topic</dt>
+            <dd th:text="${problem.topic}"></dd>
+
+            <dt>Difficulty</dt>
+            <dd th:text="${problem.difficulty}"></dd>
+
+            <dt>Practice Status</dt>
+            <dd th:text="${problem.practiceStatus}"></dd>
+
+            <dt>Tags</dt>
+            <dd th:text="${problem.tags}"></dd>
+        </dl>
+
+        <h3>Description</h3>
+        <p th:text="${problem.description}"></p>
+
+        <div th:if="${problem.userAttempt == null or #strings.isEmpty(problem.userAttempt)}">
+            <section class="guide-section">
+                <h3>Practice First</h3>
+                <p>Try solving this yourself before looking at the solution. Write your approach or
+                    code below. Once you submit, the pattern hint, explanation, solution code, common
+                    mistakes, and complexity analysis will unlock below so you can compare.</p>
+                <form method="post" th:action="@{/problems/{id}/attempt(id=${problem.id})}">
+                    <div class="form-group">
+                        <textarea name="userAttempt" rows="10" class="code-input"
+                                  placeholder="Write your attempt here (pseudocode or real code)..."
+                                  required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Submit Attempt &amp; Reveal Solution</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <div th:if="${problem.userAttempt != null and not #strings.isEmpty(problem.userAttempt)}">
+            <h3>Your Attempt</h3>
+            <pre class="note-content" th:text="${problem.userAttempt}"></pre>
+
+            <form th:action="@{/problems/{id}/attempt/clear(id=${problem.id})}" method="post">
+                <button type="submit" class="btn-secondary">Try Again (Clear Attempt)</button>
+            </form>
+
+            <h3>How to Recognize This Pattern</h3>
+            <p th:text="${problem.patternHint}"></p>
+
+            <h3>Explanation of Approach</h3>
+            <p th:text="${problem.explanation}"></p>
+
+            <h3>Solution Code</h3>
+            <pre class="note-content" th:text="${problem.solutionCode}"></pre>
+
+            <h3>Common Mistakes</h3>
+            <p th:text="${problem.commonMistakes}"></p>
+
+            <dl class="detail-list">
+                <dt>Time Complexity</dt>
+                <dd th:text="${problem.timeComplexity}"></dd>
+
+                <dt>Space Complexity</dt>
+                <dd th:text="${problem.spaceComplexity}"></dd>
+
+                <dt>Interview Tags</dt>
+                <dd th:text="${problem.companyTags}"></dd>
+            </dl>
+
+            <section class="guide-section">
+                <h3>Compare &amp; Analyze</h3>
+                <p>Look at your attempt above next to the official solution. Did you identify the same
+                    pattern? Is your time or space complexity the same, better, or worse? If worse,
+                    which specific step in your approach caused the extra cost - an extra loop, a
+                    missing early exit, or an unnecessary data structure?</p>
+            </section>
+        </div>
+
+        <form th:action="@{/problems/{id}/delete(id=${problem.id})}" method="post"
+              onsubmit="return confirm('Delete this problem? This cannot be undone.');">
+            <button type="submit" class="btn-danger">Delete</button>
+        </form>
+
+        <p><a href="/problems">&larr; Back to Problems</a></p>
+    </main>
+</div>
+</body>
+</html>

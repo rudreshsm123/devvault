@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2 th:text="${snippet.title}"></h2>
+            <a th:href="@{/snippets/{id}/edit(id=${snippet.id})}" class="btn-primary">Edit</a>
+        </div>
+
+        <dl class="detail-list">
+            <dt>Language</dt>
+            <dd th:text="${snippet.language}"></dd>
+
+            <dt>Tags</dt>
+            <dd th:text="${snippet.tags}"></dd>
+        </dl>
+
+        <p th:text="${snippet.description}"></p>
+
+        <pre class="note-content" th:text="${snippet.code}"></pre>
+
+        <form th:action="@{/snippets/{id}/delete(id=${snippet.id})}" method="post"
+              onsubmit="return confirm('Delete this snippet? This cannot be undone.');">
+            <button type="submit" class="btn-danger">Delete</button>
+        </form>
+
+        <p><a href="/snippets">&larr; Back to Snippets</a></p>
+    </main>
+</div>
+</body>
+</html>

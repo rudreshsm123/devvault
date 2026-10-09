@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Learning Resources</h2>
+            <a class="btn-primary" href="/resources/new">+ New Resource</a>
+        </div>
+
+        <form class="filter-bar" method="get" th:action="@{/resources}">
+            <input type="text" name="q" aria-label="Search keyword" placeholder="Search title or description..." th:value="${q}">
+
+            <input type="text" name="topic" aria-label="Topic" placeholder="Topic" th:value="${selectedTopic}">
+
+            <select name="resourceType" aria-label="Resource type">
+                <option value="">Any type</option>
+                <option th:each="t : ${resourceTypes}" th:value="${t}" th:text="${t}"
+                        th:selected="${t == selectedResourceType}"></option>
+            </select>
+
+            <button type="submit" class="btn-secondary">Filter</button>
+            <a href="/resources" class="clear-filters">Clear</a>
+        </form>
+
+        <table class="data-table" th:if="${not resources.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Topic</th>
+                <th>Link</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="resource : ${resources}">
+                <td th:text="${resource.title}"></td>
+                <td th:text="${resource.resourceType}"></td>
+                <td th:text="${resource.topic}"></td>
+                <td><a th:href="${resource.url}" target="_blank" rel="noopener">Open</a></td>
+                <td class="actions">
+                    <a th:href="@{/resources/{id}(id=${resource.id})}">View</a>
+                    <a th:href="@{/resources/{id}/edit(id=${resource.id})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${resources.isEmpty()}">No learning resources yet. Add your first one!</p>
+    </main>
+</div>
+</body>
+</html>

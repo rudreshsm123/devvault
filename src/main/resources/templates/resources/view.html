@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2 th:text="${resource.title}"></h2>
+            <a th:href="@{/resources/{id}/edit(id=${resource.id})}" class="btn-primary">Edit</a>
+        </div>
+
+        <dl class="detail-list">
+            <dt>Type</dt>
+            <dd th:text="${resource.resourceType}"></dd>
+
+            <dt>Topic</dt>
+            <dd th:text="${resource.topic}"></dd>
+
+            <dt>Tags</dt>
+            <dd th:text="${resource.tags}"></dd>
+
+            <dt>Link</dt>
+            <dd><a th:href="${resource.url}" th:text="${resource.url}" target="_blank" rel="noopener"></a></dd>
+        </dl>
+
+        <p th:text="${resource.description}"></p>
+
+        <form th:action="@{/resources/{id}/delete(id=${resource.id})}" method="post"
+              onsubmit="return confirm('Delete this resource? This cannot be undone.');">
+            <button type="submit" class="btn-danger">Delete</button>
+        </form>
+
+        <p><a href="/resources">&larr; Back to Resources</a></p>
+    </main>
+</div>
+</body>
+</html>

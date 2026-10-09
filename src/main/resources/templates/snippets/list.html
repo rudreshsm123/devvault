@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Code Snippets</h2>
+            <a class="btn-primary" href="/snippets/new">+ New Snippet</a>
+        </div>
+
+        <form class="filter-bar" method="get" th:action="@{/snippets}">
+            <input type="text" name="q" aria-label="Search keyword" placeholder="Search title, description, or code..." th:value="${q}">
+
+            <select name="language" aria-label="Language">
+                <option value="">Any language</option>
+                <option th:each="l : ${languages}" th:value="${l}" th:text="${l}"
+                        th:selected="${l == selectedLanguage}"></option>
+            </select>
+
+            <button type="submit" class="btn-secondary">Filter</button>
+            <a href="/snippets" class="clear-filters">Clear</a>
+        </form>
+
+        <table class="data-table" th:if="${not snippets.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Language</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="snippet : ${snippets}">
+                <td th:text="${snippet.title}"></td>
+                <td th:text="${snippet.language}"></td>
+                <td th:text="${snippet.tags}"></td>
+                <td class="actions">
+                    <a th:href="@{/snippets/{id}(id=${snippet.id})}">View</a>
+                    <a th:href="@{/snippets/{id}/edit(id=${snippet.id})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${snippets.isEmpty()}">No snippets yet. Save your first reusable snippet!</p>
+    </main>
+</div>
+</body>
+</html>

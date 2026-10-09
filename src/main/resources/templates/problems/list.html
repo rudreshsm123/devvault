@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Coding Problems</h2>
+            <a class="btn-primary" href="/problems/new">+ New Problem</a>
+        </div>
+
+        <form class="filter-bar" method="get" th:action="@{/problems}">
+            <input type="text" name="q" aria-label="Search keyword" placeholder="Search title or description..." th:value="${q}">
+
+            <input type="text" name="topic" aria-label="Topic" placeholder="Topic" th:value="${selectedTopic}">
+
+            <select name="difficulty" aria-label="Difficulty">
+                <option value="">Any difficulty</option>
+                <option th:each="d : ${difficulties}" th:value="${d}" th:text="${d}"
+                        th:selected="${d == selectedDifficulty}"></option>
+            </select>
+
+            <select name="practiceStatus" aria-label="Practice status">
+                <option value="">Any practice status</option>
+                <option th:each="s : ${practiceStatuses}" th:value="${s}" th:text="${s}"
+                        th:selected="${s == selectedPracticeStatus}"></option>
+            </select>
+
+            <button type="submit" class="btn-secondary">Filter</button>
+            <a href="/problems" class="clear-filters">Clear</a>
+        </form>
+
+        <table class="data-table" th:if="${not problems.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Difficulty</th>
+                <th>Practice Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="problem : ${problems}">
+                <td th:text="${problem.title}"></td>
+                <td th:text="${problem.topic}"></td>
+                <td th:text="${problem.difficulty}"></td>
+                <td th:text="${problem.practiceStatus}"></td>
+                <td class="actions">
+                    <a th:href="@{/problems/{id}(id=${problem.id})}">View</a>
+                    <a th:href="@{/problems/{id}/edit(id=${problem.id})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${problems.isEmpty()}">No coding problems yet. Add your first one!</p>
+    </main>
+</div>
+</body>
+</html>

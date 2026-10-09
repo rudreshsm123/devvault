@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="head">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>DevVault</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </th:block>
+</head>
+<body>
+    <nav th:fragment="sidebar" class="sidebar">
+        <div class="logo">DevVault</div>
+        <ul>
+            <li><a href="/">Dashboard</a></li>
+            <li><a href="/notes">Notes</a></li>
+            <li><a href="/snippets">Snippets</a></li>
+            <li><a href="/problems">Problems</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/guide">Interview Prep Guide</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

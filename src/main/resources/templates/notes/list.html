@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Notes</h2>
+            <a class="btn-primary" href="/notes/new">+ New Note</a>
+        </div>
+
+        <form class="filter-bar" method="get" th:action="@{/notes}">
+            <input type="text" name="q" aria-label="Search keyword" placeholder="Search title or content..." th:value="${q}">
+
+            <input type="text" name="language" aria-label="Programming language" placeholder="Language" th:value="${selectedLanguage}">
+
+            <input type="text" name="topic" aria-label="Topic" placeholder="Topic" th:value="${selectedTopic}">
+
+            <select name="difficulty" aria-label="Difficulty">
+                <option value="">Any difficulty</option>
+                <option th:each="d : ${difficulties}" th:value="${d}" th:text="${d}"
+                        th:selected="${d == selectedDifficulty}"></option>
+            </select>
+
+            <select name="revisionStatus" aria-label="Revision status">
+                <option value="">Any revision status</option>
+                <option th:each="r : ${revisionStatuses}" th:value="${r}" th:text="${r}"
+                        th:selected="${r == selectedRevisionStatus}"></option>
+            </select>
+
+            <button type="submit" class="btn-secondary">Filter</button>
+            <a href="/notes" class="clear-filters">Clear</a>
+        </form>
+
+        <table class="data-table" th:if="${not notes.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Language</th>
+                <th>Topic</th>
+                <th>Difficulty</th>
+                <th>Revision</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="note : ${notes}">
+                <td th:text="${note.title}"></td>
+                <td th:text="${note.programmingLanguage}"></td>
+                <td th:text="${note.topic}"></td>
+                <td th:text="${note.difficulty}"></td>
+                <td th:text="${note.revisionStatus}"></td>
+                <td class="actions">
+                    <a th:href="@{/notes/{id}(id=${note.id})}">View</a>
+                    <a th:href="@{/notes/{id}/edit(id=${note.id})}">Edit</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p th:if="${notes.isEmpty()}">No notes yet. Create your first one!</p>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content guide-content">
+        <div class="content-header">
+            <h2>Interview &amp; Aptitude Prep Guide</h2>
+        </div>
+
+        <section class="guide-section">
+            <h3>1. How to Analyze a Problem Statement</h3>
+            <p>Before writing any code, work through these steps in order:</p>
+            <ol>
+                <li><strong>Read the constraints first, not the examples.</strong> The input size tells
+                    you the required time complexity. As a rule of thumb: n &le; ~20 allows exponential
+                    solutions (brute force/backtracking); n &le; ~10<sup>5</sup>-10<sup>6</sup> usually
+                    needs O(n log n) or O(n); n &le; ~10<sup>9</sup> or larger usually demands O(log n)
+                    or O(1), which is a strong hint that binary search or a math formula is intended.</li>
+                <li><strong>Identify the "shape" of the input and the goal</strong> - is it a single
+                    array, two arrays, a string, a tree, a graph, intervals, or a stream? Match that
+                    shape against the cheatsheet below.</li>
+                <li><strong>Trace the given example by hand</strong> before coding anything. If you
+                    can't manually produce the expected output, you don't understand the problem yet.</li>
+                <li><strong>State the brute-force approach out loud first</strong>, even if you don't
+                    code it. This proves correctness-in-principle and gives the interviewer a baseline
+                    complexity to compare your optimization against.</li>
+                <li><strong>Only then optimize</strong>, using the pattern you identified in step 2.</li>
+            </ol>
+        </section>
+
+        <section class="guide-section">
+            <h3>2. Pattern Recognition Cheatsheet</h3>
+            <p>Match the signal in the problem statement to the algorithm family it usually implies:</p>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Signal in the problem</th>
+                    <th>Likely algorithm / structure</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr><td>Sorted array, need a pair/triplet matching a target</td><td>Two Pointers</td></tr>
+                <tr><td>Need an answer in O(log n) on sorted or monotonic data</td><td>Binary Search</td></tr>
+                <tr><td>"Contiguous subarray/substring" with some running property</td><td>Sliding Window</td></tr>
+                <tr><td>"Count ways," "min/max cost," overlapping subproblems</td><td>Dynamic Programming</td></tr>
+                <tr><td>"Generate all combinations/subsets/permutations"</td><td>Backtracking</td></tr>
+                <tr><td>Shortest path / level-by-level / "fewest steps" in an unweighted graph</td><td>BFS</td></tr>
+                <tr><td>Explore deep paths, detect cycles, topological order</td><td>DFS / Topological Sort</td></tr>
+                <tr><td>"Must happen before," dependency resolution, task scheduling</td><td>Topological Sort (Kahn's)</td></tr>
+                <tr><td>Nested/matching structure (brackets, nested calls)</td><td>Stack</td></tr>
+                <tr><td>Maximum/minimum over every sliding window</td><td>Monotonic Deque</td></tr>
+                <tr><td>Top-K, Kth largest/smallest, repeatedly need the current min/max</td><td>Heap / PriorityQueue</td></tr>
+                <tr><td>Fast lookup, frequency counting, "have I seen this before?"</td><td>HashMap / HashSet</td></tr>
+                <tr><td>Linked list: cycle detection, middle node, Kth from end</td><td>Two Pointers (slow/fast)</td></tr>
+                <tr><td>Merge/overlap/scheduling with start-end ranges</td><td>Sort + Greedy</td></tr>
+                <tr><td>Range sum / range query over an array</td><td>Prefix Sum</td></tr>
+                <tr><td>Design a cache/structure needing O(1) ops + ordering</td><td>HashMap + Doubly Linked List</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="guide-section">
+            <h3>3. Making Sure You Pass the Test Cases</h3>
+            <ul>
+                <li><strong>Check the constraints against your complexity.</strong> If n can be 10<sup>5</sup>
+                    and your solution is O(n<sup>2</sup>), it will fail on large hidden test cases even
+                    if it passes the small example shown to you.</li>
+                <li><strong>Explicitly test edge cases</strong>: empty input, a single element, all
+                    identical elements, already sorted, reverse sorted, all negative numbers, and the
+                    maximum allowed input size.</li>
+                <li><strong>Watch for integer overflow</strong> when summing or multiplying large values
+                    - use <code>long</code> instead of <code>int</code> if the problem's numbers could
+                    exceed about 2 billion.</li>
+                <li><strong>Re-run your logic mentally on the provided example</strong> after coding, not
+                    just before - it's easy to introduce a bug while translating your plan into code.</li>
+                <li><strong>Don't assume input is well-formed</strong> unless the problem says so - null
+                    checks and bounds checks on untrusted input are often exactly what "hidden" test
+                    cases are designed to catch.</li>
+            </ul>
+        </section>
+
+        <section class="guide-section">
+            <h3>4. Common Errors and What They Usually Mean</h3>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Error</th>
+                    <th>Usually means...</th>
+                    <th>How to fix</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ArrayIndexOutOfBoundsException</td>
+                    <td>An off-by-one in a loop bound, or accessing <code>i+1</code>/<code>i-1</code>
+                        without a bounds check.</td>
+                    <td>Check <code>&lt;</code> vs <code>&lt;=</code> in loop conditions; guard
+                        neighbor-index access with an explicit bounds check.</td>
+                </tr>
+                <tr>
+                    <td>NullPointerException</td>
+                    <td>Usually a linked list/tree traversal that forgot to check a node for null
+                        before dereferencing it (very common with fast/slow pointers).</td>
+                    <td>Add the null check before <code>.next</code>/<code>.left</code>/<code>.right</code>
+                        access, not after.</td>
+                </tr>
+                <tr>
+                    <td>StackOverflowError</td>
+                    <td>Recursion with no base case, or recursion depth proportional to input size on
+                        very large input (e.g. recursing once per array element).</td>
+                    <td>Verify the base case terminates correctly; convert to an iterative version with
+                        an explicit stack, or add memoization to cut the depth.</td>
+                </tr>
+                <tr>
+                    <td>ConcurrentModificationException</td>
+                    <td>Modifying a List/Map/Set while iterating over it with a for-each loop.</td>
+                    <td>Use an <code>Iterator</code>'s own <code>remove()</code>, or collect changes
+                        first and apply them after the loop.</td>
+                </tr>
+                <tr>
+                    <td>Solution is "too slow" / times out conceptually</td>
+                    <td>A nested loop (O(n<sup>2</sup>)) is doing work a hash map, sort, or two-pointer
+                        pass could do in O(n) or O(n log n).</td>
+                    <td>Ask: "am I re-scanning data I could have remembered?" That question alone finds
+                        most O(n<sup>2</sup>) &rarr; O(n) upgrades.</td>
+                </tr>
+                <tr>
+                    <td>Wrong answer only on edge cases</td>
+                    <td>An edge case wasn't considered: empty input, single element, or integer
+                        overflow from using <code>int</code> where <code>long</code> was needed.</td>
+                    <td>Re-run the edge-case checklist in section 3 above against your specific logic.</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="guide-section">
+            <h3>5. How Senior Developers Think About These Questions</h3>
+            <p>Every problem in the <a href="/problems">Coding Problems</a> section now includes a
+                "How to Recognize This Pattern" note and a "Common Mistakes" section - written from the
+                interviewer's side of the table, not just the solution's. When reviewing a problem,
+                read those two sections <em>before</em> the solution code, and try to name the pattern
+                yourself first. That's the actual skill being tested in both aptitude rounds and
+                technical interviews - recognizing the shape of a problem quickly, not memorizing any
+                one specific solution.</p>
+        </section>
+    </main>
+</div>
+</body>
+</html>

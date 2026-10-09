@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Dashboard</h2>
+        </div>
+
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-value" th:text="${noteCount}"></div>
+                <div class="stat-label">Notes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${snippetCount}"></div>
+                <div class="stat-label">Snippets</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${problemCount}"></div>
+                <div class="stat-label">Coding Problems</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${resourceCount}"></div>
+                <div class="stat-label">Learning Resources</div>
+            </div>
+        </div>
+
+        <h3>Recently Added Notes</h3>
+        <table class="data-table" th:if="${not recentNotes.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Created</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="note : ${recentNotes}">
+                <td><a th:href="@{/notes/{id}(id=${note.id})}" th:text="${note.title}"></a></td>
+                <td th:text="${note.topic}"></td>
+                <td th:text="${#temporals.format(note.createdAt, 'dd MMM yyyy')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${recentNotes.isEmpty()}">No notes yet.</p>
+
+        <h3>Needs Revision</h3>
+        <table class="data-table" th:if="${not notesNeedingRevision.isEmpty() or not problemsNeedingRevision.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="note : ${notesNeedingRevision}">
+                <td>Note</td>
+                <td th:text="${note.title}"></td>
+                <td th:text="${note.topic}"></td>
+                <td><a th:href="@{/notes/{id}(id=${note.id})}">Review</a></td>
+            </tr>
+            <tr th:each="problem : ${problemsNeedingRevision}">
+                <td>Problem</td>
+                <td th:text="${problem.title}"></td>
+                <td th:text="${problem.topic}"></td>
+                <td><a th:href="@{/problems/{id}(id=${problem.id})}">Review</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${notesNeedingRevision.isEmpty() and problemsNeedingRevision.isEmpty()}">
+            Nothing marked for revision right now.
+        </p>
+    </main>
+</div>
+</body>
+</html>

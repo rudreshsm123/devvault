@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2 th:text="${note.title}"></h2>
+            <a th:href="@{/notes/{id}/edit(id=${note.id})}" class="btn-primary">Edit</a>
+        </div>
+
+        <dl class="detail-list">
+            <dt>Language</dt>
+            <dd th:text="${note.programmingLanguage}"></dd>
+
+            <dt>Topic</dt>
+            <dd th:text="${note.topic}"></dd>
+
+            <dt>Difficulty</dt>
+            <dd th:text="${note.difficulty}"></dd>
+
+            <dt>Tags</dt>
+            <dd th:text="${note.tags}"></dd>
+
+            <dt>Revision Status</dt>
+            <dd th:text="${note.revisionStatus}"></dd>
+
+            <dt>Important</dt>
+            <dd th:text="${note.important} ? 'Yes' : 'No'"></dd>
+        </dl>
+
+        <pre class="note-content" th:text="${note.content}"></pre>
+
+        <form th:action="@{/notes/{id}/delete(id=${note.id})}" method="post"
+              onsubmit="return confirm('Delete this note? This cannot be undone.');">
+            <button type="submit" class="btn-danger">Delete</button>
+        </form>
+
+        <p><a href="/notes">&larr; Back to Notes</a></p>
+    </main>
+</div>
+</body>
+</html>

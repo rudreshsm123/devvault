@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2 th:text="${snippet.id} == null ? 'New Code Snippet' : 'Edit Code Snippet'">Snippet</h2>
+        </div>
+
+        <form method="post" th:object="${snippet}"
+              th:action="${snippet.id} == null ? @{/snippets} : @{/snippets/{id}/edit(id=${snippet.id})}">
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" th:field="*{title}">
+                <span class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="language">Language</label>
+                <select id="language" th:field="*{language}">
+                    <option value="">-- Select --</option>
+                    <option th:each="l : ${languages}" th:value="${l}" th:text="${l}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" rows="3" th:field="*{description}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="code">Code</label>
+                <textarea id="code" rows="12" class="code-input" th:field="*{code}"></textarea>
+                <span class="field-error" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags (comma-separated)</label>
+                <input type="text" id="tags" th:field="*{tags}">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Save</button>
+                <a href="/snippets">Cancel</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>
