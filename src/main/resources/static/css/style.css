@@ -353,3 +353,19 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+.readonly-banner {
+    margin: 16px 12px 0;
+    padding: 10px 12px;
+    border-left: 4px solid #f5a623;
+    border-radius: 4px;
+    background: #fff4de;
+    color: #5c3d00;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.readonly-banner strong {
+    display: block;
+    margin-bottom: 2px;
+}

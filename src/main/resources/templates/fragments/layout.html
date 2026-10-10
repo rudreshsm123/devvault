@@ -19,6 +19,10 @@
             <li><a href="/resources">Resources</a></li>
             <li><a href="/guide">Interview Prep Guide</a></li>
         </ul>
+        <div class="readonly-banner" th:if="${readOnly}" role="status">
+            <strong>Read-only demo</strong>
+            <span>You can browse and practise, but adding, editing and deleting are disabled.</span>
+        </div>
     </nav>
 </body>
 </html>
