@@ -39,6 +39,7 @@ public class SnippetService {
         existing.setTitle(updated.getTitle());
         existing.setCode(updated.getCode());
         existing.setDescription(updated.getDescription());
+        existing.setMeaning(updated.getMeaning());
         existing.setLanguage(updated.getLanguage());
         existing.setTags(updated.getTags());
         return snippetRepository.save(existing);

@@ -21,7 +21,13 @@
 
         <p th:text="${snippet.description}"></p>
 
+        <h3>Code</h3>
         <pre class="note-content" th:text="${snippet.code}"></pre>
+
+        <section class="guide-section" th:if="${snippet.meaning != null and not #strings.isEmpty(snippet.meaning)}">
+            <h3>Meaning</h3>
+            <p class="note-content" th:text="${snippet.meaning}"></p>
+        </section>
 
         <form th:action="@{/snippets/{id}/delete(id=${snippet.id})}" method="post"
               onsubmit="return confirm('Delete this snippet? This cannot be undone.');">

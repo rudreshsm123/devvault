@@ -33,7 +33,11 @@ public class CodeSnippet {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "TEXT")
+    private String meaning;
+
     @Enumerated(EnumType.STRING)
+    @Column(length = 32)
     private SnippetLanguage language;
 
     private String tags;
@@ -87,6 +91,14 @@ public class CodeSnippet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getMeaning() {
+        return meaning;
+    }
+
+    public void setMeaning(String meaning) {
+        this.meaning = meaning;
     }
 
     public SnippetLanguage getLanguage() {
