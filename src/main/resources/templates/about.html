@@ -9,6 +9,7 @@
         <div class="content-header">
             <h2>Skills &amp; Tech Behind DevVault</h2>
         </div>
+        <p class="byline">Designed &amp; built by <span class="signature big" data-signature>Rajesh S M</span></p>
         <p class="muted">
             DevVault is a full-stack Java application, not just a list of problems. This page shows what it is
             built with, which engineering skills each part demonstrates, and how to talk about it in an interview.
@@ -35,6 +36,7 @@
                 <tr><td>Database</td><td>MySQL (local) and H2 (public demo)</td><td>Real relational database for development; in-memory database so the public demo costs nothing.</td></tr>
                 <tr><td>Views</td><td>Thymeleaf, HTML5, CSS3</td><td>Server-side rendering: fast first paint, no JavaScript build step, good for SEO.</td></tr>
                 <tr><td>API</td><td>REST controllers returning JSON under /api</td><td>The same services power both the web pages and a JSON API.</td></tr>
+                <tr><td>Security</td><td>Spring Security (form login, BCrypt, CSRF)</td><td>Optional accounts keep each learner's progress on the server; passwords are stored only as hashes.</td></tr>
                 <tr><td>Validation</td><td>Jakarta Bean Validation</td><td>Rules live on the entity (@NotBlank, @URL) so every entry point enforces them.</td></tr>
                 <tr><td>Testing</td><td>JUnit 5, Mockito, MockMvc</td><td>Fast unit tests for services and controller tests without starting a server.</td></tr>
                 <tr><td>Build</td><td>Maven wrapper</td><td>Anyone can build with one command and no pre-installed Maven.</td></tr>
@@ -95,14 +97,15 @@ Cross-cutting: GlobalExceptionHandler (consistent JSON errors),
 explained code snippets, notes and a chapter-wise learning path in MySQL. I structured it in controller, service and repository layers,
 validated input with Bean Validation, and covered the logic with JUnit and Mockito tests. For the public version I added a Spring profile
 that swaps MySQL for an in-memory H2 database and a filter that makes the site read-only, then containerised it with a multi-stage Dockerfile
-and deployed it so every push to GitHub redeploys. If I kept going, I would add authentication, move to Flyway migrations and cache the
+and deployed it so every push to GitHub redeploys. I also added optional accounts with Spring Security (BCrypt, CSRF protection) so
+learners keep their progress on any device. If I kept going, I would add Flyway migrations, login rate limiting and cache the
 search queries."</p>
         </section>
 
         <section class="guide-section">
             <h3>Honest next steps (good to mention, shows maturity)</h3>
             <ul>
-                <li>Add user accounts with Spring Security so each learner has private notes and progress.</li>
+                <li>Add roles so only an admin can edit content on a hosted deployment, plus login rate limiting and password reset by e-mail.</li>
                 <li>Replace automatic schema updates with Flyway migrations for safe production changes.</li>
                 <li>Add integration tests with Testcontainers against a real MySQL.</li>
                 <li>Add caching and pagination for the largest list pages.</li>

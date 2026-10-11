@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Sign in</h2>
+        </div>
+
+        <div class="auth-card">
+            <p class="auth-ok" th:if="${param.registered}">Account created. Please sign in.</p>
+            <p class="auth-error" th:if="${param.error}">Wrong username or password.</p>
+            <p class="auth-ok" th:if="${param.logout}">You have been signed out.</p>
+
+            <form method="post" th:action="@{/login}">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" autofocus required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Sign in</button>
+                    <a href="/register">Create an account</a>
+                </div>
+            </form>
+
+            <p class="muted auth-note">
+                Signing in saves your "Mark as done" progress on the server, so it follows you to any device.
+                Your password is stored only as a BCrypt hash.
+            </p>
+            <p class="muted auth-note" th:if="${readOnly}">
+                This public demo keeps accounts in memory, so they are cleared whenever the server restarts.
+                Run DevVault locally with MySQL for permanent accounts.
+            </p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

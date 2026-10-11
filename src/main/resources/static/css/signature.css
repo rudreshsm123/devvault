@@ -1,0 +1,75 @@
+/* Animated name. Letters rise in one by one, then a colour wave runs through them forever.
+   signature.js wraps every letter of [data-signature] in a span; without JavaScript the name is plain text. */
+
+.signature {
+    display: inline-block;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.signature .ch {
+    display: inline-block;
+    opacity: 0;
+    background-image: linear-gradient(100deg, #22d3ee 0%, #7c5cff 35%, #fb7185 65%, #fbbf24 85%, #22d3ee 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation:
+        sig-in 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.25) both,
+        sig-wave 5s linear infinite;
+    animation-delay: calc(var(--i) * 80ms + 250ms), calc(var(--i) * -160ms);
+    transition: translate 0.2s ease;
+}
+
+.signature .ch:hover { translate: 0 -0.18em; }
+
+.signature.big { font-size: clamp(1.8rem, 5vw, 2.8rem); }
+.signature.big::after {
+    content: "";
+    display: block;
+    height: 3px;
+    width: 0;
+    margin-top: 4px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #22d3ee, #7c5cff, #fb7185);
+    animation: sig-line 1.1s ease forwards;
+    animation-delay: 1.5s;
+}
+
+.byline {
+    margin: 22px 0 0;
+    color: var(--muted, #9aa6c7);
+    font-size: 0.95rem;
+}
+.byline .signature { margin-left: 6px; vertical-align: middle; }
+
+.sidebar-by {
+    margin: 26px 8px 0;
+    padding-top: 14px;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+.sidebar-by .signature { display: block; margin-top: 2px; font-size: 1.05rem; }
+
+@keyframes sig-in {
+    from { opacity: 0; transform: translateY(0.9em) rotate(8deg) scale(0.7); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes sig-wave {
+    from { background-position: 0% 0; }
+    to   { background-position: 300% 0; }
+}
+
+@keyframes sig-line {
+    to { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .signature .ch { animation: none; opacity: 1; }
+    .signature.big::after { animation: none; width: 100%; }
+}

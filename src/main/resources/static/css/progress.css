@@ -71,3 +71,64 @@ tr.done { background-color: rgba(22, 163, 74, 0.06); }
 }
 .status-row button.active { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: 700; }
 .status-row button:hover:not(.active) { background: #f1f5f9; }
+
+/* Accounts */
+.sidebar-user { margin: 0 8px 14px; font-size: 0.85rem; color: #cbd5e1; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.sidebar-user a { display: inline; padding: 0; color: #7dd3fc; }
+.sidebar-user a:hover { background: none; text-decoration: underline; }
+.sidebar-user form { margin: 0; }
+.link-button { background: none; border: 0; padding: 0; color: #7dd3fc; cursor: pointer; font: inherit; text-decoration: underline; }
+
+.auth-card { max-width: 440px; background: #fff; padding: 24px 26px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+.auth-error { background: #fef2f2; color: #b91c1c; border-left: 4px solid #dc2626; padding: 8px 12px; border-radius: 4px; }
+.auth-ok { background: #f0fdf4; color: #166534; border-left: 4px solid #16a34a; padding: 8px 12px; border-radius: 4px; }
+.auth-note { font-size: 0.85rem; margin-top: 14px; }
+
+/* ---------- Phones and small tablets ---------- */
+.content { min-width: 0; }
+
+@media (max-width: 800px) {
+    .app-layout { flex-direction: column; }
+
+    /* The sidebar becomes a compact sticky bar with a swipeable row of links. */
+    .sidebar {
+        width: 100%;
+        padding: 10px 12px;
+        position: sticky;
+        top: 0;
+        z-index: 40;
+    }
+    .sidebar .logo { margin-bottom: 6px; padding-left: 0; font-size: 1.1rem; }
+    .sidebar-user { margin: 0 0 6px; }
+    .sidebar-search { margin-bottom: 8px; }
+    .sidebar ul {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .sidebar li { margin: 0; flex: 0 0 auto; }
+    .sidebar li a { padding: 7px 12px; background: #334155; border-radius: 999px; font-size: 0.9rem; }
+    .sidebar-by, .readonly-banner { display: none; }
+
+    .content { padding: 16px; max-width: 100%; }
+    .content-header { flex-wrap: wrap; gap: 10px; }
+    .content-header h2 { font-size: 1.3rem; }
+
+    .filter-bar input[type="text"], .filter-bar select { flex: 1 1 140px; min-width: 0; }
+
+    /* Wide tables scroll sideways inside their own box instead of widening the page. */
+    .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+    .note-content, pre { overflow-x: auto; max-width: 100%; }
+    .detail-list { grid-template-columns: 1fr; }
+    .auth-card { max-width: 100%; }
+    .progress-toggle { gap: 8px; }
+}
+
+/* Hide the scrollbar of the swipeable link row on phones (it still scrolls by touch). */
+@media (max-width: 800px) {
+    .sidebar ul { scrollbar-width: none; }
+    .sidebar ul::-webkit-scrollbar { display: none; }
+}

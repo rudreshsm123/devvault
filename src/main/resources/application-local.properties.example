@@ -1,0 +1,5 @@
+# Copy this file to application-local.properties (that file is git-ignored) and fill in your own values.
+# Create the database first:  CREATE DATABASE devvault; CREATE USER 'devvault_app'@'localhost' IDENTIFIED BY '...'; GRANT ALL ON devvault.* TO 'devvault_app'@'localhost';
+spring.datasource.url=jdbc:mysql://localhost:3306/devvault
+spring.datasource.username=devvault_app
+spring.datasource.password=change-me

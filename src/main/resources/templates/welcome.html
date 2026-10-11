@@ -9,6 +9,9 @@
     <link rel="stylesheet" th:href="@{/css/welcome.css}">
     <link rel="stylesheet" th:href="@{/css/tide.css}">
     <script th:src="@{/js/tide.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/css/signature.css}">
+    <script th:src="@{/js/signature.js}" defer></script>
+    <meta name="author" content="Rajesh S M">
 </head>
 <body class="welcome">
 
@@ -45,6 +48,7 @@
                     <a class="btn btn-primary" href="/problems">Browse problems</a>
                     <a class="btn btn-ghost" href="/dashboard">Open dashboard</a>
                 </div>
+                <p class="byline">Designed &amp; built by <span class="signature big" data-signature>Rajesh S M</span></p>
                 <p class="trust">
                     <b th:text="${problemCount}">130</b> problems &middot;
                     <b th:text="${snippetCount}">45</b> snippets &middot;
@@ -222,7 +226,7 @@
 
 <footer class="w-foot">
     <div class="w-container">
-        <span>&copy; DevVault - a developer knowledge base.</span>
+        <span>&copy; DevVault - a developer knowledge base, built by <span class="signature" data-signature>Rajesh S M</span>.</span>
         <span>
             <a href="/problems">Problems</a> &middot; <a href="/snippets">Snippets</a> &middot;
             <a href="/resources">Resources</a> &middot; <a href="/notes">Notes</a> &middot; <a href="/guide">Guide</a>

@@ -13,20 +13,22 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Public demo mode (devvault.readonly=true): visitors can browse everything and practise problems,
- * but cannot create, edit or delete content.
+ * Public demo mode (devvault.readonly=true): visitors can browse everything, practise problems, create an account
+ * and save their own progress, but cannot create, edit or delete content.
  */
 @Component
 @ConditionalOnProperty(name = "devvault.readonly", havingValue = "true")
 public class ReadOnlyFilter extends OncePerRequestFilter {
 
     private static final Set<String> SAFE_METHODS = Set.of("GET", "HEAD", "OPTIONS");
-    private static final Pattern PRACTICE = Pattern.compile("^/problems/[0-9]+/attempt(/clear)?$");
+    /** Practice attempts, creating an account and a signed-in user's own progress are still allowed. */
+    private static final Pattern ALLOWED_WRITES = Pattern.compile(
+            "^(/problems/[0-9]+/attempt(/clear)?|/register|/api/me/progress(/toggle|/import)?)$");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        if (SAFE_METHODS.contains(request.getMethod()) || PRACTICE.matcher(request.getRequestURI()).matches()) {
+        if (SAFE_METHODS.contains(request.getMethod()) || ALLOWED_WRITES.matcher(request.getRequestURI()).matches()) {
             chain.doFilter(request, response);
             return;
         }
