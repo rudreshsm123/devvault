@@ -7,7 +7,10 @@ import com.devvault.config.seed.ExtraProblems;
 import com.devvault.config.seed.HardArraysHeaps;
 import com.devvault.config.seed.HardDpStrings;
 import com.devvault.config.seed.HardGraphsTreesDesign;
+import com.devvault.config.seed.EarlyBeginnerExplanations;
+import com.devvault.config.seed.EarlyIntermediateExplanations;
 import com.devvault.config.seed.HardProblemExplanations;
+import com.devvault.config.seed.StarterProblemExplanations;
 import com.devvault.config.seed.HardProblems;
 import com.devvault.config.seed.HardSystemsBackend;
 import com.devvault.config.seed.IntermediateProblems;
@@ -123,6 +126,33 @@ class SeedDataTest {
             assertThat(explanations.get(p.getTitle()).interviewTips()).as(p.getTitle()).isNotBlank();
         }
         assertThat(explanations).hasSize(HardProblems.all().size());
+    }
+
+    @Test
+    void everyEarlierProblemNowHasALineByLineExplanation() {
+        java.util.Map<String, HardProblemExplanations.Explanation> all = new java.util.HashMap<>(HardProblemExplanations.all());
+        all.putAll(StarterProblemExplanations.all());
+        all.putAll(EarlyBeginnerExplanations.all());
+        all.putAll(EarlyIntermediateExplanations.all());
+
+        List<CodingProblem> earlier = new ArrayList<>();
+        earlier.addAll(BeginnerProblems.all());
+        earlier.addAll(IntermediateProblems.all());
+        earlier.addAll(HardProblems.all());
+        for (CodingProblem p : earlier) {
+            assertThat(all).as("missing explanation for " + p.getTitle()).containsKey(p.getTitle());
+        }
+        for (var entry : StarterProblemExplanations.all().entrySet()) {
+            assertThat(pairs(entry.getValue().lineByLine())).as(entry.getKey()).isGreaterThanOrEqualTo(3);
+            assertThat(entry.getValue().interviewTips()).as(entry.getKey()).isNotBlank();
+        }
+        for (var entry : EarlyBeginnerExplanations.all().entrySet()) {
+            assertThat(pairs(entry.getValue().lineByLine())).as(entry.getKey()).isGreaterThanOrEqualTo(3);
+        }
+        for (var entry : EarlyIntermediateExplanations.all().entrySet()) {
+            assertThat(pairs(entry.getValue().lineByLine())).as(entry.getKey()).isGreaterThanOrEqualTo(3);
+        }
+        assertThat(StarterProblemExplanations.all()).hasSize(26);
     }
 
     @Test

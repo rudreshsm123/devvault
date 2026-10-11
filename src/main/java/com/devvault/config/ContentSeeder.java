@@ -3,6 +3,8 @@ package com.devvault.config;
 import com.devvault.config.seed.BasicsProblemsA;
 import com.devvault.config.seed.BasicsProblemsB;
 import com.devvault.config.seed.BeginnerProblems;
+import com.devvault.config.seed.EarlyBeginnerExplanations;
+import com.devvault.config.seed.EarlyIntermediateExplanations;
 import com.devvault.config.seed.ExtraProblems;
 import com.devvault.config.seed.HardArraysHeaps;
 import com.devvault.config.seed.HardDpStrings;
@@ -23,6 +25,7 @@ import com.devvault.config.seed.LessonsCollections;
 import com.devvault.config.seed.LessonsFoundations;
 import com.devvault.config.seed.ResourceSeedData;
 import com.devvault.config.seed.SnippetSeedData;
+import com.devvault.config.seed.StarterProblemExplanations;
 import com.devvault.entity.CodeSnippet;
 import com.devvault.entity.CodingProblem;
 import com.devvault.entity.Lesson;
@@ -82,7 +85,10 @@ public class ContentSeeder implements SmartInitializingSingleton {
         problems.saveAll(newProblems);
 
         // Problems seeded before line-by-line explanations existed get them added here.
-        Map<String, HardProblemExplanations.Explanation> extra = HardProblemExplanations.all();
+        Map<String, HardProblemExplanations.Explanation> extra = new java.util.HashMap<>(HardProblemExplanations.all());
+        extra.putAll(StarterProblemExplanations.all());
+        extra.putAll(EarlyBeginnerExplanations.all());
+        extra.putAll(EarlyIntermediateExplanations.all());
         List<CodingProblem> toEnrich = problems.findAll().stream()
                 .filter(p -> p.getLineByLine() == null || p.getLineByLine().isBlank())
                 .filter(p -> extra.containsKey(p.getTitle()))
