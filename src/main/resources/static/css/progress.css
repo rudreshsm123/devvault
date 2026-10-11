@@ -1,0 +1,73 @@
+/* Sidebar search, My Progress, one-click status and search result lists. */
+
+.sidebar-search { margin: 0 0 18px; }
+.sidebar-search input {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 0.9rem;
+}
+.sidebar-search input::placeholder { color: #94a3b8; }
+.sidebar-search input:focus { outline: 2px solid #38bdf8; outline-offset: 1px; }
+
+.result-list { list-style: none; padding: 0; margin: 0 0 8px; }
+.result-list li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: baseline;
+    padding: 8px 0;
+    border-top: 1px solid #e5e7eb;
+}
+.result-list li:first-child { border-top: 0; }
+
+.progress-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 16px;
+}
+.progress-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #2563eb;
+    background: #fff;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+}
+.progress-btn:hover { background: #eff6ff; }
+.progress-btn.is-done { background: #16a34a; border-color: #16a34a; color: #fff; }
+.progress-link { font-size: 0.9rem; }
+
+/* Finished items in lists get a green check. */
+tr.done td:first-child::before,
+li.done > a::before {
+    content: "\2713";
+    color: #16a34a;
+    font-weight: 800;
+    margin-right: 8px;
+}
+li.done > a { color: #15803d; }
+tr.done { background-color: rgba(22, 163, 74, 0.06); }
+
+.progress-bar-wrap { margin-bottom: 18px; }
+.progress-bar-label { font-weight: 600; margin-bottom: 6px; }
+.progress-track { height: 12px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #22d3ee, #2563eb); border-radius: 999px; transition: width 0.6s ease; }
+
+.status-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 16px; }
+.status-row button {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid #94a3b8;
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.82rem;
+}
+.status-row button.active { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: 700; }
+.status-row button:hover:not(.active) { background: #f1f5f9; }

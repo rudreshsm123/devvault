@@ -25,6 +25,13 @@ public class LessonService {
         return lessonRepository.findById(id).orElseThrow(() -> new NotFoundException("Lesson", id));
     }
 
+    public List<Lesson> search(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return List.of();
+        }
+        return lessonRepository.search(keyword.trim());
+    }
+
     public long count() {
         return lessonRepository.count();
     }

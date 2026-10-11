@@ -68,6 +68,12 @@ public class ProblemService {
         return problemRepository.save(existing);
     }
 
+    public CodingProblem updatePracticeStatus(Long id, RevisionStatus status) {
+        CodingProblem problem = getProblemById(id);
+        problem.setPracticeStatus(status);
+        return problemRepository.save(problem);
+    }
+
     public void deleteProblem(Long id) {
         problemRepository.delete(getProblemById(id));
     }

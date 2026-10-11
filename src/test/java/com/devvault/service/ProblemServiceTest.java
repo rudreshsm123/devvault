@@ -130,4 +130,23 @@ class ProblemServiceTest {
 
         assertThat(result.getUserAttempt()).isNull();
     }
+
+    @Test
+    void updatePracticeStatus_changesOnlyTheStatus() {
+        when(problemRepository.findById(1L)).thenReturn(Optional.of(sampleProblem));
+        when(problemRepository.save(sampleProblem)).thenReturn(sampleProblem);
+
+        CodingProblem result = problemService.updatePracticeStatus(1L, RevisionStatus.NEEDS_REVISION);
+
+        assertThat(result.getPracticeStatus()).isEqualTo(RevisionStatus.NEEDS_REVISION);
+        assertThat(result.getTitle()).isEqualTo("Two Sum");
+    }
+
+    @Test
+    void updatePracticeStatus_throwsWhenProblemMissing() {
+        when(problemRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> problemService.updatePracticeStatus(99L, RevisionStatus.LEARNED))
+                .isInstanceOf(NotFoundException.class);
+    }
 }

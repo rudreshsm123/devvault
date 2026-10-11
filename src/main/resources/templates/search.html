@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Search</h2>
+        </div>
+
+        <form class="filter-bar" method="get" th:action="@{/search}">
+            <input type="text" name="q" aria-label="Search everything" th:value="${q}" autofocus
+                   placeholder="Search lessons, problems, snippets, notes and resources...">
+            <button type="submit" class="btn-secondary">Search</button>
+        </form>
+
+        <p class="muted" th:if="${q.isEmpty()}">
+            Type at least two letters. Try <a href="/search?q=hashmap">hashmap</a>,
+            <a href="/search?q=binary">binary</a>, <a href="/search?q=spring">spring</a> or
+            <a href="/search?q=index">index</a>.
+        </p>
+        <p class="muted" th:if="${tooShort}">Please type at least two letters.</p>
+
+        <p th:if="${!q.isEmpty() and !tooShort}">
+            <strong th:text="${total}">0</strong> results for <strong th:text="${q}"></strong>
+        </p>
+
+        <section class="guide-section" th:if="${lessonTotal != null and lessonTotal > 0}">
+            <h3>Lessons (<span th:text="${lessonTotal}"></span>)</h3>
+            <ul class="result-list">
+                <li th:each="l : ${lessons}">
+                    <a th:href="@{/learn/{id}(id=${l.id})}" th:text="${l.title}"></a>
+                    <span class="muted" th:text="'Chapter ' + ${l.chapterNo} + ': ' + ${l.chapterTitle}"></span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="guide-section" th:if="${problemTotal != null and problemTotal > 0}">
+            <h3>Problems (<span th:text="${problemTotal}"></span>)</h3>
+            <ul class="result-list">
+                <li th:each="p : ${problems}">
+                    <a th:href="@{/problems/{id}(id=${p.id})}" th:text="${p.title}"></a>
+                    <span class="muted" th:text="${p.difficulty} + ' | ' + ${p.topic}"></span>
+                </li>
+            </ul>
+            <a th:if="${problemTotal > 8}" th:href="@{/problems(q=${q})}">See all <span th:text="${problemTotal}"></span> problems &rarr;</a>
+        </section>
+
+        <section class="guide-section" th:if="${snippetTotal != null and snippetTotal > 0}">
+            <h3>Snippets (<span th:text="${snippetTotal}"></span>)</h3>
+            <ul class="result-list">
+                <li th:each="s : ${snippets}">
+                    <a th:href="@{/snippets/{id}(id=${s.id})}" th:text="${s.title}"></a>
+                    <span class="muted" th:text="${s.language}"></span>
+                </li>
+            </ul>
+            <a th:if="${snippetTotal > 8}" th:href="@{/snippets(q=${q})}">See all <span th:text="${snippetTotal}"></span> snippets &rarr;</a>
+        </section>
+
+        <section class="guide-section" th:if="${noteTotal != null and noteTotal > 0}">
+            <h3>Notes (<span th:text="${noteTotal}"></span>)</h3>
+            <ul class="result-list">
+                <li th:each="n : ${notes}">
+                    <a th:href="@{/notes/{id}(id=${n.id})}" th:text="${n.title}"></a>
+                    <span class="muted" th:text="${n.topic}"></span>
+                </li>
+            </ul>
+            <a th:if="${noteTotal > 8}" th:href="@{/notes(q=${q})}">See all <span th:text="${noteTotal}"></span> notes &rarr;</a>
+        </section>
+
+        <section class="guide-section" th:if="${resourceTotal != null and resourceTotal > 0}">
+            <h3>Resources (<span th:text="${resourceTotal}"></span>)</h3>
+            <ul class="result-list">
+                <li th:each="r : ${resources}">
+                    <a th:href="@{/resources/{id}(id=${r.id})}" th:text="${r.title}"></a>
+                    <span class="muted" th:text="${r.topic}"></span>
+                </li>
+            </ul>
+            <a th:if="${resourceTotal > 8}" th:href="@{/resources(q=${q})}">See all <span th:text="${resourceTotal}"></span> resources &rarr;</a>
+        </section>
+
+        <p th:if="${!q.isEmpty() and !tooShort and total == 0}">
+            Nothing matched. Try a shorter or different word, such as a topic like "graph" or a keyword like "cache".
+        </p>
+    </main>
+</div>
+</body>
+</html>

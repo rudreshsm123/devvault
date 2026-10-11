@@ -15,6 +15,9 @@
             &middot; Lesson <span th:text="${lesson.lessonNo}">1</span>
         </p>
 
+        <div class="progress-toggle" data-kind="lesson"
+             th:attr="data-id=${lesson.id},data-title=${lesson.title},data-url=@{/learn/{id}(id=${lesson.id})}"></div>
+
         <div class="callout" th:if="${lesson.whyLearn != null and not #strings.isEmpty(lesson.whyLearn)}">
             <strong>Why learn this?</strong>
             <p th:text="${lesson.whyLearn}"></p>

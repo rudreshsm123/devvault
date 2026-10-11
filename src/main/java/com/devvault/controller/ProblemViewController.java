@@ -98,6 +98,13 @@ public class ProblemViewController {
         return "redirect:/problems/" + id;
     }
 
+    /** One-click practice status (not started, learning, learned, needs revision). */
+    @PostMapping("/{id}/status")
+    public String updateStatus(@PathVariable Long id, @RequestParam RevisionStatus status) {
+        problemService.updatePracticeStatus(id, status);
+        return "redirect:/problems/" + id;
+    }
+
     @PostMapping("/{id}/attempt/clear")
     public String clearAttempt(@PathVariable Long id) {
         problemService.clearAttempt(id);

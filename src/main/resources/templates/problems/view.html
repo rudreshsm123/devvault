@@ -25,6 +25,16 @@
             <dd th:text="${problem.tags}"></dd>
         </dl>
 
+        <div class="progress-toggle" data-kind="problem"
+             th:attr="data-id=${problem.id},data-title=${problem.title},data-url=@{/problems/{id}(id=${problem.id})}"></div>
+
+        <form class="status-row" method="post" th:unless="${readOnly}"
+              th:action="@{/problems/{id}/status(id=${problem.id})}">
+            <span class="muted">Practice status:</span>
+            <button th:each="s : ${T(com.devvault.entity.RevisionStatus).values()}" type="submit" name="status"
+                    th:value="${s}" th:text="${s}" th:classappend="${s == problem.practiceStatus} ? 'active' : ''"></button>
+        </form>
+
         <h3>Description</h3>
         <p th:text="${problem.description}"></p>
 
