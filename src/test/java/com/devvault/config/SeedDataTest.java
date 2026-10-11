@@ -7,6 +7,7 @@ import com.devvault.config.seed.ExtraProblems;
 import com.devvault.config.seed.HardArraysHeaps;
 import com.devvault.config.seed.HardDpStrings;
 import com.devvault.config.seed.HardGraphsTreesDesign;
+import com.devvault.config.seed.HardProblemExplanations;
 import com.devvault.config.seed.HardProblems;
 import com.devvault.config.seed.HardSystemsBackend;
 import com.devvault.config.seed.IntermediateProblems;
@@ -111,6 +112,17 @@ class SeedDataTest {
         assertThat(all.stream().filter(p -> p.getDifficulty() == Difficulty.EASY).count()).isGreaterThanOrEqualTo(40);
         assertThat(all.stream().filter(p -> p.getDifficulty() == Difficulty.MEDIUM).count()).isGreaterThanOrEqualTo(60);
         assertThat(all.stream().filter(p -> p.getDifficulty() == Difficulty.HARD).count()).isGreaterThanOrEqualTo(60);
+    }
+
+    @Test
+    void everyEarlyHardProblemGetsALineByLineExplanation() {
+        var explanations = HardProblemExplanations.all();
+        for (CodingProblem p : HardProblems.all()) {
+            assertThat(explanations).as("missing explanation for " + p.getTitle()).containsKey(p.getTitle());
+            assertThat(pairs(explanations.get(p.getTitle()).lineByLine())).as(p.getTitle()).isGreaterThanOrEqualTo(3);
+            assertThat(explanations.get(p.getTitle()).interviewTips()).as(p.getTitle()).isNotBlank();
+        }
+        assertThat(explanations).hasSize(HardProblems.all().size());
     }
 
     @Test

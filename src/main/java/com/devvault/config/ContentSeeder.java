@@ -14,6 +14,7 @@ import com.devvault.config.seed.MediumListsTreesGraphs;
 import com.devvault.config.seed.MediumWebsiteBackend;
 import com.devvault.config.seed.NoteSeedData;
 import com.devvault.config.seed.ResourceSeedMore;
+import com.devvault.config.seed.HardProblemExplanations;
 import com.devvault.config.seed.HardProblems;
 import com.devvault.config.seed.IntermediateProblems;
 import com.devvault.config.seed.LessonsAlgorithmsWeb;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Locale;
 import java.util.Set;
 
@@ -78,6 +80,18 @@ public class ContentSeeder implements SmartInitializingSingleton {
             }
         }
         problems.saveAll(newProblems);
+
+        // Problems seeded before line-by-line explanations existed get them added here.
+        Map<String, HardProblemExplanations.Explanation> extra = HardProblemExplanations.all();
+        List<CodingProblem> toEnrich = problems.findAll().stream()
+                .filter(p -> p.getLineByLine() == null || p.getLineByLine().isBlank())
+                .filter(p -> extra.containsKey(p.getTitle()))
+                .toList();
+        for (CodingProblem p : toEnrich) {
+            p.setLineByLine(extra.get(p.getTitle()).lineByLine());
+            p.setInterviewTips(extra.get(p.getTitle()).interviewTips());
+        }
+        problems.saveAll(toEnrich);
 
         Set<String> snippetTitles = new HashSet<>();
         snippets.findAll().forEach(s -> snippetTitles.add(key(s.getTitle())));
