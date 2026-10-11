@@ -44,6 +44,16 @@
             </div>
 
             <div class="form-group">
+                <label for="lineByLine">Line-by-line explanation (one per line: code fragment ==&gt; why it is there)</label>
+                <textarea id="lineByLine" rows="8" class="code-input" th:field="*{lineByLine}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="interviewTips">What the interviewer looks for</label>
+                <textarea id="interviewTips" rows="4" th:field="*{interviewTips}"></textarea>
+            </div>
+
+            <div class="form-group">
                 <label for="explanation">Explanation of Approach</label>
                 <textarea id="explanation" rows="5" th:field="*{explanation}"></textarea>
             </div>

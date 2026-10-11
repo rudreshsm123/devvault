@@ -26,7 +26,7 @@
 
         <section class="guide-section" th:if="${snippet.meaning != null and not #strings.isEmpty(snippet.meaning)}">
             <h3>Meaning</h3>
-            <p class="note-content" th:text="${snippet.meaning}"></p>
+            <p class="prose" th:text="${snippet.meaning}"></p>
         </section>
 
         <form th:action="@{/snippets/{id}/delete(id=${snippet.id})}" method="post"

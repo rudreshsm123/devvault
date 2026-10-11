@@ -64,6 +64,20 @@
             <h3>Solution Code</h3>
             <pre class="note-content" th:text="${problem.solutionCode}"></pre>
 
+            <section class="guide-section" th:if="${problem.lineByLine != null and not #strings.isEmpty(problem.lineByLine)}">
+                <h3>Code, Line by Line</h3>
+                <p class="muted">Each row shows a piece of the code and exactly why it is there.</p>
+                <div class="lbl-row" th:each="row : ${T(com.devvault.util.LineByLine).parse(problem.lineByLine)}">
+                <code th:text="${row.code}"></code>
+                <span th:text="${row.why}"></span>
+            </div>
+            </section>
+
+            <section class="guide-section" th:if="${problem.interviewTips != null and not #strings.isEmpty(problem.interviewTips)}">
+                <h3>What the Interviewer Looks For</h3>
+                <p class="prose" th:text="${problem.interviewTips}"></p>
+            </section>
+
             <h3>Common Mistakes</h3>
             <p th:text="${problem.commonMistakes}"></p>
 

@@ -55,6 +55,14 @@ public class CodingProblem {
 
     private String companyTags;
 
+    /** One "code fragment => why it is there" pair per line. */
+    @Column(columnDefinition = "TEXT")
+    private String lineByLine;
+
+    /** What the interviewer evaluates, likely follow-ups, and how to present the answer. */
+    @Column(columnDefinition = "TEXT")
+    private String interviewTips;
+
     @Column(columnDefinition = "TEXT")
     private String userAttempt;
 
@@ -206,5 +214,21 @@ public class CodingProblem {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public String getLineByLine() {
+        return lineByLine;
+    }
+
+    public void setLineByLine(String lineByLine) {
+        this.lineByLine = lineByLine;
+    }
+
+    public String getInterviewTips() {
+        return interviewTips;
+    }
+
+    public void setInterviewTips(String interviewTips) {
+        this.interviewTips = interviewTips;
     }
 }

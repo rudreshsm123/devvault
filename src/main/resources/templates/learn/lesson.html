@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2 th:text="${lesson.title}">Lesson</h2>
+            <a href="/learn" class="btn-primary">All chapters</a>
+        </div>
+        <p class="lesson-meta">
+            Chapter <span th:text="${lesson.chapterNo}">1</span>: <span th:text="${lesson.chapterTitle}"></span>
+            &middot; Lesson <span th:text="${lesson.lessonNo}">1</span>
+        </p>
+
+        <div class="callout" th:if="${lesson.whyLearn != null and not #strings.isEmpty(lesson.whyLearn)}">
+            <strong>Why learn this?</strong>
+            <p th:text="${lesson.whyLearn}"></p>
+        </div>
+
+        <section class="guide-section" th:if="${lesson.concept != null and not #strings.isEmpty(lesson.concept)}">
+            <h3>The Idea in Plain English</h3>
+            <p class="prose" th:text="${lesson.concept}"></p>
+        </section>
+
+        <section class="guide-section" th:if="${lesson.code != null and not #strings.isEmpty(lesson.code)}">
+            <h3>Example Code <small class="muted" th:if="${lesson.codeLanguage != null}" th:text="'(' + ${lesson.codeLanguage} + ')'"></small></h3>
+            <pre class="note-content" th:text="${lesson.code}"></pre>
+        </section>
+
+        <section class="guide-section" th:if="${lesson.lineByLine != null and not #strings.isEmpty(lesson.lineByLine)}">
+            <h3>Line by Line: What It Does and Why It Is There</h3>
+            <div class="lbl-row" th:each="row : ${T(com.devvault.util.LineByLine).parse(lesson.lineByLine)}">
+                <code th:text="${row.code}"></code>
+                <span th:text="${row.why}"></span>
+            </div>
+        </section>
+
+        <div class="callout" th:if="${lesson.interviewView != null and not #strings.isEmpty(lesson.interviewView)}">
+            <strong>What interviewers and recruiters expect</strong>
+            <p class="prose" th:text="${lesson.interviewView}"></p>
+        </div>
+
+        <div class="callout warn" th:if="${lesson.commonMistakes != null and not #strings.isEmpty(lesson.commonMistakes)}">
+            <strong>Common beginner mistakes</strong>
+            <p class="prose" th:text="${lesson.commonMistakes}"></p>
+        </div>
+
+        <div class="lesson-nav">
+            <a th:if="${prev != null}" th:href="@{/learn/{id}(id=${prev.id})}" th:text="'&larr; ' + ${prev.title}"></a>
+            <span th:if="${prev == null}"></span>
+            <a th:if="${next != null}" th:href="@{/learn/{id}(id=${next.id})}" th:text="${next.title} + ' &rarr;'"></a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

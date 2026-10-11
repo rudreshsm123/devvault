@@ -1,5 +1,6 @@
 package com.devvault.controller;
 
+import com.devvault.service.LessonService;
 import com.devvault.service.NoteService;
 import com.devvault.service.ProblemService;
 import com.devvault.service.ResourceService;
@@ -15,9 +16,12 @@ public class WelcomeController {
     private final ProblemService problemService;
     private final ResourceService resourceService;
     private final SnippetService snippetService;
+    private final LessonService lessonService;
 
     public WelcomeController(NoteService noteService, ProblemService problemService,
-                             ResourceService resourceService, SnippetService snippetService) {
+                             ResourceService resourceService, SnippetService snippetService,
+                             LessonService lessonService) {
+        this.lessonService = lessonService;
         this.noteService = noteService;
         this.problemService = problemService;
         this.resourceService = resourceService;
@@ -30,6 +34,7 @@ public class WelcomeController {
         model.addAttribute("snippetCount", snippetService.count());
         model.addAttribute("problemCount", problemService.count());
         model.addAttribute("resourceCount", resourceService.count());
+        model.addAttribute("lessonCount", lessonService.count());
         return "welcome";
     }
 }

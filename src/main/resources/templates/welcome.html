@@ -18,10 +18,11 @@
     <div class="w-container">
         <a class="w-brand" href="/">Dev<span>Vault</span></a>
         <nav class="w-links" aria-label="Main">
+            <a href="/learn">Learn</a>
             <a href="#features">Features</a>
             <a href="#levels">Levels</a>
             <a href="#how">How it works</a>
-            <a href="/snippets">Snippets</a>
+            <a href="/about">For Recruiters</a>
             <a class="btn btn-primary" href="/problems">Start practising</a>
         </nav>
     </div>
@@ -32,7 +33,7 @@
     <section class="hero">
         <div class="w-container">
             <div>
-                <span class="pill">New: 100+ problems, 19 languages</span>
+                <span class="pill">New: chapter-wise Learn path, 300+ problems, line-by-line explanations</span>
                 <h1>Your personal vault for <span class="grad">coding knowledge</span>.</h1>
                 <p class="lead">
                     Practise real interview and real-website problems, study snippets explained in plain English,
@@ -71,7 +72,7 @@
             <div class="stat"><strong th:text="${problemCount}">130</strong><span>Coding problems</span></div>
             <div class="stat"><strong th:text="${snippetCount}">45</strong><span>Snippets with meaning</span></div>
             <div class="stat"><strong th:text="${resourceCount}">55</strong><span>Learning resources</span></div>
-            <div class="stat"><strong th:text="${noteCount}">0</strong><span>Notes</span></div>
+            <div class="stat"><strong th:text="${lessonCount}">0</strong><span>Chapter lessons</span></div>
         </div>
     </div>
 
@@ -83,6 +84,12 @@
             <p class="sub">Five tools that work together so what you study actually sticks.</p>
 
             <div class="grid3">
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#128214;</div>
+                    <h3>Chapter-wise Learn Path</h3>
+                    <p>10 chapters from your first program to system design. Every lesson says what to learn, why it exists, explains the code line by line and what interviewers expect.</p>
+                    <a class="more" href="/learn">Start learning &rarr;</a>
+                </article>
                 <article class="card">
                     <div class="ico" aria-hidden="true">&#129504;</div>
                     <h3>Coding Problems</h3>
@@ -112,6 +119,12 @@
                     <h3>Real-Website Problems</h3>
                     <p>Shopping carts, URL shorteners, rate limiters, autocomplete and seat booking - problems modelled on features real sites ship.</p>
                     <a class="more" href="/problems?q=website">Try website problems &rarr;</a>
+                </article>
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#128188;</div>
+                    <h3>Skills &amp; Tech (for Recruiters)</h3>
+                    <p>The stack, architecture and engineering practices behind this site, plus a ready-to-use project pitch and what interviewers check.</p>
+                    <a class="more" href="/about">See the tech &rarr;</a>
                 </article>
                 <article class="card">
                     <div class="ico" aria-hidden="true">&#127919;</div>
@@ -197,8 +210,9 @@
     <div class="w-container">
         <section class="final">
             <h2>Ready to start?</h2>
-            <p>Pick one problem today. Tomorrow you will recognise the pattern.</p>
-            <a class="btn btn-primary" href="/problems">Start with a problem</a>
+            <p>Pick one lesson or problem today. Tomorrow you will recognise the pattern.</p>
+            <a class="btn btn-primary" href="/learn">Start the Learn path</a>
+            <a class="btn btn-ghost" href="/problems">Browse problems</a>
             <a class="btn btn-ghost" href="/dashboard">Go to dashboard</a>
         </section>
     </div>

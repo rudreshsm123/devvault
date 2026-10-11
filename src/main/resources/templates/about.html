@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content guide-content">
+        <div class="content-header">
+            <h2>Skills &amp; Tech Behind DevVault</h2>
+        </div>
+        <p class="muted">
+            DevVault is a full-stack Java application, not just a list of problems. This page shows what it is
+            built with, which engineering skills each part demonstrates, and how to talk about it in an interview.
+        </p>
+
+        <section class="guide-section">
+            <h3>The project at a glance</h3>
+            <div class="about-grid">
+                <div class="about-stat"><strong th:text="${problemCount}">0</strong><span>coding problems</span></div>
+                <div class="about-stat"><strong th:text="${lessonCount}">0</strong><span>chapter lessons</span></div>
+                <div class="about-stat"><strong th:text="${snippetCount}">0</strong><span>explained snippets</span></div>
+                <div class="about-stat"><strong th:text="${resourceCount}">0</strong><span>curated resources</span></div>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h3>Technology stack</h3>
+            <table class="data-table">
+                <thead><tr><th>Layer</th><th>Technology</th><th>Why it was chosen</th></tr></thead>
+                <tbody>
+                <tr><td>Language</td><td>Java 21</td><td>Modern LTS release: records, switch expressions, text blocks.</td></tr>
+                <tr><td>Framework</td><td>Spring Boot 4 (Spring MVC)</td><td>Industry standard for backend services; convention over configuration.</td></tr>
+                <tr><td>Persistence</td><td>Spring Data JPA + Hibernate</td><td>Repository pattern, derived and JPQL queries, no hand-written boilerplate SQL.</td></tr>
+                <tr><td>Database</td><td>MySQL (local) and H2 (public demo)</td><td>Real relational database for development; in-memory database so the public demo costs nothing.</td></tr>
+                <tr><td>Views</td><td>Thymeleaf, HTML5, CSS3</td><td>Server-side rendering: fast first paint, no JavaScript build step, good for SEO.</td></tr>
+                <tr><td>API</td><td>REST controllers returning JSON under /api</td><td>The same services power both the web pages and a JSON API.</td></tr>
+                <tr><td>Validation</td><td>Jakarta Bean Validation</td><td>Rules live on the entity (@NotBlank, @URL) so every entry point enforces them.</td></tr>
+                <tr><td>Testing</td><td>JUnit 5, Mockito, MockMvc</td><td>Fast unit tests for services and controller tests without starting a server.</td></tr>
+                <tr><td>Build</td><td>Maven wrapper</td><td>Anyone can build with one command and no pre-installed Maven.</td></tr>
+                <tr><td>Delivery</td><td>Docker (multi-stage), GitHub, Render</td><td>Reproducible image, source control, and a public link that redeploys on every push.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="guide-section">
+            <h3>Architecture (what to draw on a whiteboard)</h3>
+            <pre class="note-content">Browser
+   |
+Controller   (web pages + REST)      -> maps URLs, validates input, no business rules
+   |
+Service      (business logic)        -> rules, transactions, "not found" handling
+   |
+Repository   (Spring Data JPA)       -> queries, no SQL strings in the app code
+   |
+Entity / Database (MySQL or H2)
+
+Cross-cutting: GlobalExceptionHandler (consistent JSON errors),
+               ReadOnlyFilter (public demo mode), seeders (starter content).</pre>
+            <p>Each layer has one job. That separation is what interviewers mean by "clean architecture" in a
+                Spring project, and it is why the service tests do not need a database.</p>
+        </section>
+
+        <section class="guide-section">
+            <h3>What this project demonstrates</h3>
+            <ul>
+                <li><strong>Backend fundamentals:</strong> layered design, dependency injection through constructors, DTO-free entities kept simple on purpose.</li>
+                <li><strong>Data modelling:</strong> enums stored as strings, lifecycle callbacks (@PrePersist/@PreUpdate) for timestamps, and JPQL search queries with optional filters.</li>
+                <li><strong>Defensive coding:</strong> input validation, a global exception handler, parameterised queries (no SQL injection), a read-only mode that blocks every write for public visitors.</li>
+                <li><strong>Testing discipline:</strong> over 50 automated tests across controllers, services and repositories.</li>
+                <li><strong>DevOps basics:</strong> Spring profiles (local, cloud), environment-driven port, multi-stage Dockerfile, deployment from a Git push.</li>
+                <li><strong>Product thinking:</strong> attempt-first practice flow, search and filters, a learning path, and a landing page that explains the value in ten seconds.</li>
+            </ul>
+        </section>
+
+        <section class="guide-section">
+            <h3>What recruiters and interviewers actually check</h3>
+            <table class="data-table">
+                <thead><tr><th>They ask</th><th>Where to point in this project</th></tr></thead>
+                <tbody>
+                <tr><td>Can you structure a real application?</td><td>Controller, service, repository, entity packages. Open any feature and show the request path top to bottom.</td></tr>
+                <tr><td>Do you handle errors and bad input?</td><td>Bean validation messages in the forms, NotFoundException, GlobalExceptionHandler returning consistent JSON.</td></tr>
+                <tr><td>Do you test your code?</td><td>MockMvc controller tests and Mockito service tests; run <code>./mvnw test</code> live.</td></tr>
+                <tr><td>Have you shipped something?</td><td>The public link, the Dockerfile, and the profile that switches the database for the cloud.</td></tr>
+                <tr><td>Do you think about security?</td><td>Read-only filter, validated URLs, no raw SQL, secrets kept out of Git through an ignored local properties file.</td></tr>
+                <tr><td>Can you reason about performance?</td><td>Every problem lists time and space complexity; the pagination lesson explains why OFFSET is slow and keyset is fast.</td></tr>
+                <tr><td>Can you explain your trade-offs?</td><td>H2 for a free public demo versus MySQL locally; server-side rendering versus a single-page app.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="guide-section">
+            <h3>Two-minute project pitch (adapt it in your own words)</h3>
+            <p class="prose">"DevVault is a Spring Boot application I built to prepare for interviews. It stores coding problems,
+explained code snippets, notes and a chapter-wise learning path in MySQL. I structured it in controller, service and repository layers,
+validated input with Bean Validation, and covered the logic with JUnit and Mockito tests. For the public version I added a Spring profile
+that swaps MySQL for an in-memory H2 database and a filter that makes the site read-only, then containerised it with a multi-stage Dockerfile
+and deployed it so every push to GitHub redeploys. If I kept going, I would add authentication, move to Flyway migrations and cache the
+search queries."</p>
+        </section>
+
+        <section class="guide-section">
+            <h3>Honest next steps (good to mention, shows maturity)</h3>
+            <ul>
+                <li>Add user accounts with Spring Security so each learner has private notes and progress.</li>
+                <li>Replace automatic schema updates with Flyway migrations for safe production changes.</li>
+                <li>Add integration tests with Testcontainers against a real MySQL.</li>
+                <li>Add caching and pagination for the largest list pages.</li>
+            </ul>
+        </section>
+    </main>
+</div>
+</body>
+</html>

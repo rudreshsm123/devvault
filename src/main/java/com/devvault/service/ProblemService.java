@@ -62,6 +62,8 @@ public class ProblemService {
         existing.setPatternHint(updated.getPatternHint());
         existing.setCommonMistakes(updated.getCommonMistakes());
         existing.setCompanyTags(updated.getCompanyTags());
+        existing.setLineByLine(updated.getLineByLine());
+        existing.setInterviewTips(updated.getInterviewTips());
         existing.setPracticeStatus(updated.getPracticeStatus());
         return problemRepository.save(existing);
     }

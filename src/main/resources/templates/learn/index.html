@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Learn: Chapter-wise Path</h2>
+        </div>
+        <p class="muted">
+            <strong th:text="${lessonCount}">0</strong> lessons in order. Every lesson explains
+            <em>what</em> to learn, <em>why</em> it exists, the code <em>line by line</em>, and what
+            interviewers expect you to say about it.
+        </p>
+
+        <section class="chapter" th:each="entry : ${chapters}">
+            <span class="chapter-no" th:text="'Chapter ' + ${entry.key}">Chapter 1</span>
+            <h3 th:text="${entry.value[0].chapterTitle}">Title</h3>
+            <p th:text="${entry.value[0].chapterIntro}"></p>
+            <ol>
+                <li th:each="l : ${entry.value}">
+                    <a th:href="@{/learn/{id}(id=${l.id})}" th:text="${l.title}"></a>
+                </li>
+            </ol>
+        </section>
+    </main>
+</div>
+</body>
+</html>

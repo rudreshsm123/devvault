@@ -11,6 +11,18 @@ final class ProblemFactory {
     private ProblemFactory() {
     }
 
+    /** Same as {@link #add} plus a line-by-line explanation and interviewer guidance. */
+    static void full(List<CodingProblem> out, String title, String topic, Difficulty difficulty, String tags,
+                     String description, String patternHint, String beginnerCode, String intermediateCode,
+                     String explanation, String lineByLine, String interviewTips, String time, String space,
+                     String mistakes) {
+        add(out, title, topic, difficulty, tags, description, patternHint, beginnerCode, intermediateCode,
+                explanation, time, space, mistakes);
+        CodingProblem p = out.get(out.size() - 1);
+        p.setLineByLine(lineByLine.strip());
+        p.setInterviewTips(interviewTips.strip());
+    }
+
     static void add(List<CodingProblem> out, String title, String topic, Difficulty difficulty, String tags,
                     String description, String patternHint, String beginnerCode, String intermediateCode,
                     String explanation, String time, String space, String mistakes) {
