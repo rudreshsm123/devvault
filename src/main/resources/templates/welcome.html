@@ -28,6 +28,12 @@
             <a href="#levels">Levels</a>
             <a href="#how">How it works</a>
             <a href="/about">For Recruiters</a>
+            <a th:if="${currentUser == null}" href="/register">Register</a>
+            <a th:if="${currentUser == null}" class="btn btn-ghost" href="/login">Sign in</a>
+            <a th:if="${currentUser != null}" href="/progress" th:text="${currentUser} + ' - My Progress'">My Progress</a>
+            <form th:if="${currentUser != null}" th:action="@{/logout}" method="post" class="nav-form">
+                <button type="submit" class="btn btn-ghost">Sign out</button>
+            </form>
             <a class="btn btn-primary" href="/problems">Start practising</a>
         </nav>
     </div>
@@ -47,6 +53,7 @@
                 <div class="cta">
                     <a class="btn btn-primary" href="/problems">Browse problems</a>
                     <a class="btn btn-ghost" href="/dashboard">Open dashboard</a>
+                    <a th:if="${currentUser == null}" class="btn btn-ghost" href="/register">Create free account</a>
                 </div>
                 <p class="byline">Designed &amp; built by <span class="signature big" data-signature>Rajesh S M</span></p>
                 <p class="trust">

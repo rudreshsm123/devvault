@@ -73,3 +73,7 @@
     .signature .ch { animation: none; opacity: 1; }
     .signature.big::after { animation: none; width: 100%; }
 }
+
+/* Sign in / Sign out buttons in the welcome page navigation. */
+.w-links .nav-form { margin: 0; }
+.w-links .btn-ghost { padding: 8px 16px; cursor: pointer; font: inherit; font-weight: 600; color: var(--text, #e8ecf8); }
