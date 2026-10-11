@@ -13,7 +13,7 @@ import java.util.Set;
 @Service
 public class ProgressService {
 
-    private static final Set<String> KINDS = Set.of("problem", "lesson");
+    private static final Set<String> KINDS = Set.of("problem", "lesson", "drill");
     private static final Set<String> RESULTS = Set.of("right", "wrong");
     private static final int MAX_TEXT = 255;
 
@@ -86,7 +86,7 @@ public class ProgressService {
 
     private static void validate(String kind, Long itemId, String title, String url) {
         if (kind == null || !KINDS.contains(kind)) {
-            throw new IllegalArgumentException("kind must be 'problem' or 'lesson'");
+            throw new IllegalArgumentException("kind must be problem, lesson or drill");
         }
         if (itemId == null || itemId < 1) {
             throw new IllegalArgumentException("id must be a positive number");

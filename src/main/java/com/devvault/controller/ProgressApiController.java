@@ -35,7 +35,8 @@ public class ProgressApiController {
     public record ToggleRequest(String kind, Long id, String title, String url) {
     }
 
-    public record ImportRequest(Map<String, Item> problem, Map<String, Item> lesson) {
+    public record ImportRequest(Map<String, Item> problem, Map<String, Item> lesson,
+                         Map<String, Item> drill) {
     }
 
     private final ProgressService progressService;
@@ -73,6 +74,7 @@ public class ProgressApiController {
         List<UserProgress> items = new java.util.ArrayList<>();
         collect("problem", request.problem(), items);
         collect("lesson", request.lesson(), items);
+        collect("drill", request.drill(), items);
         progressService.merge(userId, items);
         return snapshot(userId);
     }
@@ -89,13 +91,19 @@ public class ProgressApiController {
     private Map<String, Map<String, Item>> snapshot(Long userId) {
         Map<String, Item> problems = new LinkedHashMap<>();
         Map<String, Item> lessons = new LinkedHashMap<>();
+        Map<String, Item> drills = new LinkedHashMap<>();
         for (UserProgress p : progressService.list(userId)) {
-            Map<String, Item> target = p.getKind().equals("problem") ? problems : lessons;
+            Map<String, Item> target = switch (p.getKind()) {
+                case "problem" -> problems;
+                case "drill" -> drills;
+                default -> lessons;
+            };
             target.put(String.valueOf(p.getItemId()), new Item(p.getTitle(), p.getUrl(), p.getDoneAt(), p.getResult()));
         }
         Map<String, Map<String, Item>> out = new LinkedHashMap<>();
         out.put("problem", problems);
         out.put("lesson", lessons);
+        out.put("drill", drills);
         return out;
     }
 

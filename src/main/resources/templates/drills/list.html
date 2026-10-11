@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Practice Drills</h2>
+            <a class="btn-primary" href="/drills/random">Random drill</a>
+        </div>
+        <p class="muted">
+            <strong th:text="${total}">10000</strong> auto-graded questions: predict the output, work out a number or pick
+            the right option. Press <em>Check answer</em> and you are told <strong>right</strong> or <strong>wrong</strong>
+            straight away, with the explanation and study links. Wrong answers go to "Practise again" in My Progress.
+        </p>
+
+        <form class="filter-bar" method="get" th:action="@{/drills}">
+            <input type="text" name="q" aria-label="Search keyword" placeholder="Search drills..." th:value="${q}">
+            <select name="topic" aria-label="Topic">
+                <option value="">Any topic</option>
+                <option th:each="t : ${topics}" th:value="${t.key}" th:text="${t.key + ' (' + t.value + ')'}"
+                        th:selected="${t.key == selectedTopic}"></option>
+            </select>
+            <select name="difficulty" aria-label="Difficulty">
+                <option value="">Any difficulty</option>
+                <option th:each="d : ${T(java.util.List).of('Beginner','Intermediate','Advanced')}" th:value="${d}" th:text="${d}"
+                        th:selected="${d == selectedDifficulty}"></option>
+            </select>
+            <button type="submit" class="btn-secondary">Filter</button>
+            <a href="/drills" class="clear-filters">Clear</a>
+        </form>
+
+        <p class="muted"><span th:text="${result.total}">0</span> drills match.</p>
+
+        <table class="data-table" th:if="${not result.items.isEmpty()}">
+            <thead><tr><th>#</th><th>Question</th><th>Topic</th><th>Level</th><th></th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${result.items}">
+                <td th:text="${d.id}"></td>
+                <td th:text="${d.title}"></td>
+                <td th:text="${d.topic}"></td>
+                <td th:text="${d.difficulty}"></td>
+                <td class="actions"><a th:href="@{/drills/{id}(id=${d.id})}">Try</a></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <nav class="pager" th:if="${result.pages > 1}">
+            <a th:if="${result.page > 1}"
+               th:href="@{/drills(page=${result.page - 1},topic=${selectedTopic},difficulty=${selectedDifficulty},q=${q})}">&laquo; Previous</a>
+            <span>Page <span th:text="${result.page}">1</span> of <span th:text="${result.pages}">1</span></span>
+            <a th:if="${result.page < result.pages}"
+               th:href="@{/drills(page=${result.page + 1},topic=${selectedTopic},difficulty=${selectedDifficulty},q=${q})}">Next &raquo;</a>
+        </nav>
+    </main>
+</div>
+</body>
+</html>

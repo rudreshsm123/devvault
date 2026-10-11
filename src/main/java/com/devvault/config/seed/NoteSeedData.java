@@ -590,6 +590,49 @@ public final class NoteSeedData {
                 API: backwards compatible, consistent naming and status codes.
                 Review style: ask questions, suggest alternatives, praise good work, separate must-fix from nice-to-have.""");
 
+        n(l, "Drills Strategy: Predicting Output", "Practice", "Java", E, false, "drills,output,strategy",
+                """
+                Predict-the-output method
+                1. Write down every variable and update it line by line like a trace table.
+                2. Watch the traps: integer division, i++ vs ++i, == on objects, char + int, overflow, switch fall-through.
+                3. Say the answer out loud before you press Check answer.
+                4. If you were wrong, find the exact line where your table and the real value split, then retry a similar drill.""");
+
+        n(l, "Drills Strategy: Dynamic Programming Questions", "Practice", "Java", M, false, "drills,dp",
+                """
+                Solving DP drills by hand
+                - Define what table[i] means in one sentence before filling anything.
+                - Write the base case (table[0]) first.
+                - Fill from small to large; each cell uses only already-filled cells.
+                - Coins: best[a] = 1 + min(best[a - coin]). LIS: dp[i] = 1 + max(dp[j]) for smaller a[j]. Knapsack: best[c] = max(best[c], best[c-w] + v).
+                - Stairs/ways: ways[i] = sum of ways[i - step].""");
+
+        n(l, "Quick Maths for Interviews", "Math", "Java", M, false, "math,gcd,modular,cheatsheet",
+                """
+                Formulas worth memorising
+                - gcd(a, b) = gcd(b, a % b); lcm = a / gcd * b
+                - C(n, k) = n! / (k! (n-k)!); subsets of n items = 2^n; handshakes = n(n-1)/2
+                - (a * b) mod m = ((a mod m) * (b mod m)) mod m
+                - Number of 1 bits: n & (n - 1) removes the lowest set bit
+                - Highest power of two <= n: Integer.highestOneBit(n)
+                - Sum 1..n = n(n+1)/2; trailing zeros of n! = n/5 + n/25 + ...""");
+
+        n(l, "HTTP Status Codes Cheat Sheet", "Web APIs", "Java", E, false, "http,status,cheatsheet",
+                """
+                2xx success: 200 OK, 201 Created, 204 No Content
+                3xx redirects: 301 Moved Permanently, 304 Not Modified
+                4xx caller's fault: 400 Bad Request, 401 Not authenticated, 403 Not allowed, 404 Not Found, 405 Wrong method, 409 Conflict, 422 Validation failed, 429 Too many requests
+                5xx server's fault: 500 Internal error, 502 Bad gateway, 503 Unavailable, 504 Gateway timeout
+                Rule: 401 = who are you? 403 = I know you, but no.""");
+
+        n(l, "Caching and Rate Limiting Basics", "Systems Design", "Java", M, false, "cache,lru,rate-limit",
+                """
+                LRU: evict the least recently used key; hits and inserts both refresh recency (LinkedHashMap with accessOrder, or HashMap + doubly linked list).
+                FIFO: evict the oldest inserted; a hit does not change order.
+                Fixed-window rate limit: counter per window (time / windowSize); simple but allows bursts at window edges.
+                Sliding window / token bucket smooth that out.
+                Always return 429 with a Retry-After header when the limit is hit.""");
+
         return l;
     }
 }

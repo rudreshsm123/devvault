@@ -123,6 +123,7 @@ public class ContentSeeder implements SmartInitializingSingleton {
         resources.findAll().forEach(r -> urls.add(key(r.getUrl())));
         List<LearningResource> allResources = new java.util.ArrayList<>(ResourceSeedData.all());
         allResources.addAll(ResourceSeedMore.all());
+        allResources.addAll(com.devvault.config.seed.ResourceSeedDrills.all());
         List<LearningResource> newResources = allResources.stream()
                 .filter(r -> urls.add(key(r.getUrl()))).toList();
         resources.saveAll(newResources);

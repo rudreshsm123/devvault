@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Drill <span th:text="${drill.id}">1</span>: <span th:text="${drill.title}">Title</span></h2>
+            <a class="btn-secondary" href="/drills/random">Random drill</a>
+        </div>
+        <p class="muted">
+            <span th:text="${drill.topic}">Topic</span> &middot; <span th:text="${drill.difficulty}">Level</span>
+        </p>
+
+        <section class="guide-section drill-box" id="drill"
+                 th:attr="data-id=${drill.id},data-kind=${drill.kind},data-title='Drill ' + ${drill.id} + ': ' + ${drill.title},data-url='/drills/' + ${drill.id}">
+            <p class="drill-question" th:text="${drill.question}">Question</p>
+            <pre class="note-content" th:if="${not #strings.isEmpty(drill.code)}"><code th:text="${drill.code}"></code></pre>
+
+            <div class="drill-answer">
+                <div th:if="${drill.kind.name() == 'CHOICE'}" class="drill-choices">
+                    <label th:each="c : ${drill.choices}">
+                        <input type="radio" name="answer" th:value="${c}"> <span th:text="${c}"></span>
+                    </label>
+                </div>
+                <input th:if="${drill.kind.name() != 'CHOICE'}" type="text" id="answer-input" name="answer" autocomplete="off"
+                       th:placeholder="${drill.kind.name() == 'NUMBER'} ? 'Type a whole number' : 'Type exactly what is printed'"
+                       aria-label="Your answer">
+                <button type="button" id="check-btn" class="btn-primary">Check answer</button>
+            </div>
+
+            <div id="verdict" class="drill-verdict" hidden aria-live="polite">
+                <p class="verdict-line"></p>
+                <p class="verdict-correct"></p>
+                <p class="verdict-why"></p>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h3>Learn this</h3>
+            <ul class="result-list">
+                <li th:each="l : ${links}"><a th:href="${l.url}" th:text="${l.title}" target="_blank" rel="noopener noreferrer">Link</a></li>
+                <li><a th:href="@{/search(q=${drill.topic})}">Search DevVault for "<span th:text="${drill.topic}"></span>"</a></li>
+                <li><a href="/learn">Chapter-wise Learn path</a></li>
+            </ul>
+        </section>
+
+        <nav class="pager">
+            <a th:if="${previousId != null}" th:href="@{/drills/{id}(id=${previousId})}">&laquo; Previous</a>
+            <a href="/drills">All drills</a>
+            <a th:if="${nextId != null}" th:href="@{/drills/{id}(id=${nextId})}">Next &raquo;</a>
+        </nav>
+    </main>
+</div>
+<script th:src="@{/js/drills.js}" defer></script>
+</body>
+</html>

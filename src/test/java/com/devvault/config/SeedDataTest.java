@@ -193,6 +193,7 @@ class SeedDataTest {
     void resourceLinksAreSecureAndUnique() {
         List<LearningResource> all = new ArrayList<>(ResourceSeedData.all());
         all.addAll(ResourceSeedMore.all());
+        all.addAll(com.devvault.config.seed.ResourceSeedDrills.all());
         Set<String> urls = new HashSet<>();
         for (LearningResource r : all) {
             assertThat(r.getUrl()).as(r.getTitle()).startsWith("http");

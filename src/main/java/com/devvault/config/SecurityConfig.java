@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
-                        "/api/notes/**", "/api/problems/**", "/api/resources/**", "/api/snippets/**"))
+                        "/api/notes/**", "/api/problems/**", "/api/resources/**", "/api/snippets/**", "/api/drills/**"))
                 // API callers get a plain 401 instead of being redirected to the HTML login page.
                 .exceptionHandling(ex -> ex.defaultAuthenticationEntryPointFor(
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),

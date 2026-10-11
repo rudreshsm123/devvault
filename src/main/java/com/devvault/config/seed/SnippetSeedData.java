@@ -663,6 +663,85 @@ public final class SnippetSeedData {
                 If any step fails, the commit shows a red cross.""",
                 "yaml,ci,github-actions");
 
+        s(l, JAVA, "Greatest common divisor (Euclid)", "Recursive gcd and lcm.",
+                """
+                static int gcd(int a, int b) {
+                    return b == 0 ? a : gcd(b, a % b);
+                }
+                static long lcm(int a, int b) {
+                    return (long) a / gcd(a, b) * b;
+                }""",
+                """
+                gcd keeps replacing (a, b) by (b, a % b) until b is 0; the remaining a is the answer.
+                lcm divides first and then multiplies so the number cannot overflow early.""",
+                "java,math,gcd");
+
+        s(l, JAVA, "LRU cache with LinkedHashMap", "A tiny LRU cache in a few lines.",
+                """
+                class Lru<K, V> extends LinkedHashMap<K, V> {
+                    private final int cap;
+                    Lru(int cap) {
+                        super(16, 0.75f, true);
+                        this.cap = cap;
+                    }
+                    @Override
+                    protected boolean removeEldestEntry(Map.Entry<K, V> e) {
+                        return size() > cap;
+                    }
+                }""",
+                """
+                The third constructor argument (true) orders entries by last access, not insertion.
+                removeEldestEntry is called after every put; returning true drops the least recently used entry.""",
+                "java,cache,lru");
+
+        s(l, JAVA, "Count 1 bits", "Count set bits without a library.",
+                """
+                int count = 0;
+                while (n != 0) {
+                    n &= n - 1;
+                    count++;
+                }""",
+                """
+                n & (n - 1) clears the lowest 1 bit, so the loop runs once per 1 bit.
+                count ends as the number of 1 bits (same as Integer.bitCount).""",
+                "java,bits");
+
+        s(l, JAVA, "Fewest coins (DP)", "Coin change with a DP array.",
+                """
+                int[] best = new int[amount + 1];
+                Arrays.fill(best, Integer.MAX_VALUE);
+                best[0] = 0;
+                for (int a = 1; a <= amount; a++) {
+                    for (int c : coins) {
+                        if (c <= a && best[a - c] != Integer.MAX_VALUE) {
+                            best[a] = Math.min(best[a], best[a - c] + 1);
+                        }
+                    }
+                }""",
+                """
+                best[a] is the fewest coins that make amount a.
+                For each coin, try using it once and add 1 to the answer for the remaining amount.
+                MAX_VALUE marks amounts that cannot be made.""",
+                "java,dp,coins");
+
+        s(l, PYTHON, "Fixed-window rate limiter", "Allow at most N requests per window.",
+                """
+                def allowed(times, limit, window):
+                    used, current, ok = 0, -1, 0
+                    for t in times:
+                        w = t // window
+                        if w != current:
+                            current, used = w, 0
+                        if used < limit:
+                            used += 1
+                            ok += 1
+                    return ok""",
+                """
+                Each request belongs to window number t // window.
+                When the window changes the counter resets.
+                A request passes only while the counter is below the limit.""",
+                "python,rate-limit");
+
         return l;
     }
 }

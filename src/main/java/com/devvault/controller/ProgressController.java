@@ -1,5 +1,6 @@
 package com.devvault.controller;
 
+import com.devvault.drill.DrillService;
 import com.devvault.service.LessonService;
 import com.devvault.service.ProblemService;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,10 @@ public class ProgressController {
 
     private final ProblemService problemService;
     private final LessonService lessonService;
+    private final DrillService drillService;
 
-    public ProgressController(ProblemService problemService, LessonService lessonService) {
+    public ProgressController(ProblemService problemService, LessonService lessonService, DrillService drillService) {
+        this.drillService = drillService;
         this.problemService = problemService;
         this.lessonService = lessonService;
     }
@@ -25,6 +28,7 @@ public class ProgressController {
     public String progress(Model model) {
         model.addAttribute("problemCount", problemService.count());
         model.addAttribute("lessonCount", lessonService.count());
+        model.addAttribute("drillCount", drillService.count());
         return "progress";
     }
 }

@@ -26,9 +26,10 @@
             var data = raw ? JSON.parse(raw) : {};
             data.problem = data.problem || {};
             data.lesson = data.lesson || {};
+            data.drill = data.drill || {};
             return data;
         } catch (e) {
-            return { problem: {}, lesson: {} };
+            return { problem: {}, lesson: {}, drill: {} };
         }
     }
 
@@ -41,7 +42,7 @@
     }
 
     function isCount(data) {
-        return Object.keys(data.problem).length + Object.keys(data.lesson).length;
+        return Object.keys(data.problem).length + Object.keys(data.lesson).length + Object.keys(data.drill).length;
     }
 
     function safeGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
@@ -87,6 +88,7 @@
         cache = start.then(function (data) {
             data.problem = data.problem || {};
             data.lesson = data.lesson || {};
+            data.drill = data.drill || {};
             return data;
         }).catch(function () {
             return loadLocal();                    // server unreachable: fall back to what the browser knows
@@ -231,11 +233,11 @@
         }
         loadAll().then(function (data) {
             links.forEach(function (a) {
-                var m = /^\/(problems|learn)\/(\d+)$/.exec(a.getAttribute('href'));
+                var m = /^\/(problems|learn|drills)\/(\d+)$/.exec(a.getAttribute('href'));
                 if (!m) {
                     return;
                 }
-                var kind = m[1] === 'problems' ? 'problem' : 'lesson';
+                var kind = m[1] === 'problems' ? 'problem' : m[1] === 'drills' ? 'drill' : 'lesson';
                 var holder = a.closest('tr') || a.closest('li');
                 if (!holder) {
                     return;
@@ -311,11 +313,22 @@
             var wrong = all('problem').filter(function (p) { return p.r === 'wrong'; });
             var totalProblems = parseInt(root.dataset.problems, 10) || 0;
             var totalLessons = parseInt(root.dataset.lessons, 10) || 0;
+            var drillsRight = all('drill').filter(function (p) { return p.r !== 'wrong'; });
+            var drillsWrong = all('drill').filter(function (p) { return p.r === 'wrong'; });
+            var totalDrills = parseInt(root.dataset.drills, 10) || 0;
             var attempted = solved.length + wrong.length;
 
             var summary = el('section', 'guide-section');
             summary.appendChild(renderBar('Lessons finished', lessons.length, totalLessons));
             summary.appendChild(renderBar('Problems solved', solved.length, totalProblems));
+            if (totalDrills > 0) {
+                summary.appendChild(renderBar('Practice drills answered right', drillsRight.length, totalDrills));
+                var drillsTried = drillsRight.length + drillsWrong.length;
+                if (drillsTried > 0) {
+                    summary.appendChild(el('p', null, 'Drill accuracy: ' + Math.round(drillsRight.length * 100 / drillsTried)
+                        + '% (' + drillsRight.length + ' right, ' + drillsWrong.length + ' wrong)'));
+                }
+            }
             if (attempted > 0) {
                 summary.appendChild(el('p', null, 'Self-checked accuracy: ' + Math.round(solved.length * 100 / attempted)
                     + '% (' + solved.length + ' right, ' + wrong.length + ' wrong)'));
@@ -328,6 +341,10 @@
 
             root.appendChild(renderList('Practise again (marked wrong)', wrong,
                 'Nothing to practise again. Problems you mark as "I got it wrong" show up here.', 'wrong-list'));
+            if (totalDrills > 0) {
+                root.appendChild(renderList('Drills to retry (answered wrong)', drillsWrong,
+                    'No wrong drill answers. Wrong answers on the Drills page show up here.', 'wrong-list'));
+            }
             root.appendChild(renderList('Problems solved', solved,
                 'Nothing here yet. Finish a problem and press "I got it right" or "Mark as done".'));
             root.appendChild(renderList('Lessons finished', lessons,
@@ -338,7 +355,7 @@
                 reset.type = 'button';
                 reset.addEventListener('click', function () {
                     if (window.confirm('Clear all progress saved in this browser? This cannot be undone.')) {
-                        saveLocal({ problem: {}, lesson: {} });
+                        saveLocal({ problem: {}, lesson: {}, drill: {} });
                         window.location.reload();
                     }
                 });
