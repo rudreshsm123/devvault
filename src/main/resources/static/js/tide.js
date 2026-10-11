@@ -42,7 +42,8 @@
         var ticking = false;
         function update() {
             var max = root.scrollHeight - window.innerHeight;
-            setLevel(max > 0 ? window.scrollY / max : 0);
+            // Short pages cannot scroll, so keep the water at a gentle fixed height instead of leaving it empty.
+            setLevel(max > 40 ? window.scrollY / max : 0.45);
             ticking = false;
         }
         window.addEventListener('scroll', function () {
@@ -60,7 +61,7 @@
             return;
         }
         var selector = '.card, .step, .stat, .stat-card, .guide-section, .chapter, .callout, '
-            + '.data-table, .final, .chip, .about-stat, .detail-list, .lbl-row';
+            + '.final, .chip, .about-stat, .detail-list, .lbl-row';
         var items = document.querySelectorAll(selector);
         var seenPerParent = new Map();
 
@@ -85,9 +86,14 @@
                     el.style.removeProperty('--d');
                 }, 1200);
             });
-        }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+        }, { threshold: 0, rootMargin: '0px 0px -4% 0px' });
 
         items.forEach(function (el) { observer.observe(el); });
+
+        // Safety net: never leave content hidden, even if the observer misbehaves.
+        window.setTimeout(function () {
+            document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { el.classList.add('in'); });
+        }, 2500);
     }
 
     function init() {

@@ -3,11 +3,11 @@
 
 :root {
     --tide: 0;                    /* 0 at the top of the page, 1 at the bottom (set by tide.js) */
-    --tide-min: 0.05;             /* water level at the very top, as a share of the viewport height */
-    --tide-range: 0.22;           /* how much the level can rise while scrolling */
-    --tide-a: rgba(37, 99, 235, 0.10);
-    --tide-b: rgba(14, 165, 233, 0.08);
-    --tide-fill: rgba(37, 99, 235, 0.06);
+    --tide-min: 0.12;             /* water level at the very top, as a share of the viewport height */
+    --tide-range: 0.38;           /* how much the level can rise while scrolling */
+    --tide-a: rgba(37, 99, 235, 0.30);
+    --tide-b: rgba(14, 165, 233, 0.22);
+    --tide-fill: linear-gradient(180deg, rgba(37, 99, 235, 0.20), rgba(14, 165, 233, 0.30));
 }
 
 body.welcome {
@@ -16,6 +16,16 @@ body.welcome {
     --tide-a: rgba(34, 211, 238, 0.20);
     --tide-b: rgba(124, 92, 255, 0.20);
     --tide-fill: linear-gradient(180deg, rgba(34, 211, 238, 0.16), rgba(124, 92, 255, 0.22));
+}
+
+/* Let the water show through the white cards and tables on the regular pages. */
+body:not(.welcome) .data-table,
+body:not(.welcome) .guide-section,
+body:not(.welcome) .chapter,
+body:not(.welcome) .stat-card,
+body:not(.welcome) .filter-bar {
+    background-color: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(1.5px);
 }
 
 /* Keep real content above the water. */
