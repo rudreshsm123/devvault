@@ -1,0 +1,109 @@
+/* ScrollTide: a water level that rises as you scroll, plus gentle reveal-on-scroll.
+   Loaded on every page. The welcome page turns the effect up through body.welcome. */
+
+:root {
+    --tide: 0;                    /* 0 at the top of the page, 1 at the bottom (set by tide.js) */
+    --tide-min: 0.05;             /* water level at the very top, as a share of the viewport height */
+    --tide-range: 0.22;           /* how much the level can rise while scrolling */
+    --tide-a: rgba(37, 99, 235, 0.10);
+    --tide-b: rgba(14, 165, 233, 0.08);
+    --tide-fill: rgba(37, 99, 235, 0.06);
+}
+
+body.welcome {
+    --tide-min: 0.07;
+    --tide-range: 0.62;
+    --tide-a: rgba(34, 211, 238, 0.20);
+    --tide-b: rgba(124, 92, 255, 0.20);
+    --tide-fill: linear-gradient(180deg, rgba(34, 211, 238, 0.16), rgba(124, 92, 255, 0.22));
+}
+
+/* Keep real content above the water. */
+.app-layout,
+body.welcome main,
+body.welcome footer {
+    position: relative;
+    z-index: 1;
+}
+
+.tide {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.tide-water {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    /* Slide the whole water sheet up as --tide grows. */
+    transform: translateY(calc((1 - (var(--tide-min) + var(--tide) * var(--tide-range))) * 100%));
+    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+}
+
+.tide-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--tide-fill);
+}
+
+.tide-wave {
+    position: absolute;
+    left: 0;
+    width: 200%;
+    height: 90px;
+    bottom: 100%;
+    margin-bottom: -1px;
+    will-change: transform;
+}
+
+.tide-wave path { fill: var(--tide-a); }
+.tide-wave.back { height: 110px; animation: tide-drift 16s linear infinite reverse; }
+.tide-wave.back path { fill: var(--tide-b); }
+.tide-wave.front { animation: tide-drift 9s linear infinite; }
+
+@keyframes tide-drift {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* Thin progress line at the very top of the viewport. */
+.tide-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: calc(var(--tide) * 100%);
+    background: linear-gradient(90deg, #22d3ee, #7c5cff);
+    z-index: 50;
+    pointer-events: none;
+    transition: width 0.2s ease-out;
+}
+
+/* Reveal on scroll. The class is added by JavaScript, so without JS everything stays visible. */
+.reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition-delay: var(--d, 0ms);
+}
+
+.reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tide-wave { animation: none; }
+    .tide-water, .tide-progress { transition: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+@media print {
+    .tide, .tide-progress { display: none; }
+}
