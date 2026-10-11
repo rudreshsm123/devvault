@@ -351,6 +351,7 @@
     window.DevVaultProgress = {
         load: loadAll,
         isDone: isDone,
+        saveResult: saveResult,
         user: function () { return user; }
     };
 

@@ -1,0 +1,246 @@
+//// twoSum
+import java.util.*;
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> seen = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            Integer j = seen.get(target - nums[i]);
+            if (j != null) return new int[] {j, i};
+            seen.put(nums[i], i);
+        }
+        return null;
+    }
+}
+//// isValid
+import java.util.*;
+class Solution {
+    public boolean isValid(String s) {
+        Deque<Character> st = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if ("([{".indexOf(c) >= 0) st.push(c);
+            else {
+                if (st.isEmpty()) return false;
+                char o = st.pop();
+                if ((c == ')' && o != '(') || (c == ']' && o != '[') || (c == '}' && o != '{')) return false;
+            }
+        }
+        return st.isEmpty();
+    }
+}
+//// reverseString
+class Solution {
+    public String reverseString(String s) { return new StringBuilder(s).reverse().toString(); }
+}
+//// isPalindrome
+class Solution {
+    public boolean isPalindrome(String s) {
+        int i = 0, j = s.length() - 1;
+        while (i < j) {
+            while (i < j && !Character.isLetterOrDigit(s.charAt(i))) i++;
+            while (i < j && !Character.isLetterOrDigit(s.charAt(j))) j--;
+            if (Character.toLowerCase(s.charAt(i++)) != Character.toLowerCase(s.charAt(j--))) return false;
+        }
+        return true;
+    }
+}
+//// fizzBuzz
+class Solution {
+    public String[] fizzBuzz(int n) {
+        String[] out = new String[n];
+        for (int i = 1; i <= n; i++) out[i - 1] = i % 15 == 0 ? "FizzBuzz" : i % 3 == 0 ? "Fizz" : i % 5 == 0 ? "Buzz" : String.valueOf(i);
+        return out;
+    }
+}
+//// findMax
+class Solution {
+    public int findMax(int[] nums) { int m = nums[0]; for (int x : nums) m = Math.max(m, x); return m; }
+}
+//// digitSum
+class Solution {
+    public int digitSum(int n) { int s = 0; while (n > 0) { s += n % 10; n /= 10; } return s; }
+}
+//// factorial
+class Solution {
+    public long factorial(int n) { long r = 1; for (int i = 2; i <= n; i++) r *= i; return r; }
+}
+//// fib
+class Solution {
+    public int fib(int n) { int a = 0, b = 1; for (int i = 0; i < n; i++) { int c = a + b; a = b; b = c; } return a; }
+}
+//// isPrime
+class Solution {
+    public boolean isPrime(int n) {
+        if (n < 2) return false;
+        for (long i = 2; i * i <= n; i++) if (n % i == 0) return false;
+        return true;
+    }
+}
+//// containsDuplicate
+import java.util.*;
+class Solution {
+    public boolean containsDuplicate(int[] nums) { Set<Integer> s = new HashSet<>(); for (int x : nums) if (!s.add(x)) return true; return false; }
+}
+//// isAnagram
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+        int[] c = new int[26];
+        for (int i = 0; i < s.length(); i++) { c[s.charAt(i) - 'a']++; c[t.charAt(i) - 'a']--; }
+        for (int x : c) if (x != 0) return false;
+        return true;
+    }
+}
+//// moveZeroes
+class Solution {
+    public int[] moveZeroes(int[] nums) {
+        int w = 0;
+        for (int r = 0; r < nums.length; r++) if (nums[r] != 0) { int t = nums[w]; nums[w++] = nums[r]; nums[r] = t; }
+        return nums;
+    }
+}
+//// maxProfit
+class Solution {
+    public int maxProfit(int[] prices) {
+        int min = Integer.MAX_VALUE, best = 0;
+        for (int p : prices) { min = Math.min(min, p); best = Math.max(best, p - min); }
+        return best;
+    }
+}
+//// climbStairs
+class Solution {
+    public int climbStairs(int n) { int a = 1, b = 1; for (int i = 1; i < n; i++) { int c = a + b; a = b; b = c; } return b; }
+}
+//// search
+class Solution {
+    public int search(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] == target) return mid;
+            if (nums[mid] < target) lo = mid + 1; else hi = mid - 1;
+        }
+        return -1;
+    }
+}
+//// isPowerOfTwo
+class Solution {
+    public boolean isPowerOfTwo(int n) { return n > 0 && (n & (n - 1)) == 0; }
+}
+//// singleNumber
+class Solution {
+    public int singleNumber(int[] nums) { int r = 0; for (int x : nums) r ^= x; return r; }
+}
+//// missingNumber
+class Solution {
+    public int missingNumber(int[] nums) { int r = nums.length; for (int i = 0; i < nums.length; i++) r ^= i ^ nums[i]; return r; }
+}
+//// maxSubArray
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int cur = nums[0], best = nums[0];
+        for (int i = 1; i < nums.length; i++) { cur = Math.max(nums[i], cur + nums[i]); best = Math.max(best, cur); }
+        return best;
+    }
+}
+//// merge
+import java.util.*;
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        int[][] a = intervals.clone();
+        Arrays.sort(a, (x, y) -> x[0] - y[0]);
+        List<int[]> out = new ArrayList<>();
+        for (int[] in : a) {
+            if (out.isEmpty() || out.get(out.size() - 1)[1] < in[0]) out.add(new int[] {in[0], in[1]});
+            else out.get(out.size() - 1)[1] = Math.max(out.get(out.size() - 1)[1], in[1]);
+        }
+        return out.toArray(new int[0][]);
+    }
+}
+//// productExceptSelf
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] out = new int[n];
+        out[0] = 1;
+        for (int i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
+        int right = 1;
+        for (int i = n - 1; i >= 0; i--) { out[i] *= right; right *= nums[i]; }
+        return out;
+    }
+}
+//// longestCommonPrefix
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        String p = strs[0];
+        for (String s : strs) while (!s.startsWith(p)) p = p.substring(0, p.length() - 1);
+        return p;
+    }
+}
+//// romanToInt
+class Solution {
+    private int v(char c) {
+        switch (c) { case 'I': return 1; case 'V': return 5; case 'X': return 10; case 'L': return 50;
+            case 'C': return 100; case 'D': return 500; default: return 1000; }
+    }
+    public int romanToInt(String s) {
+        int total = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int cur = v(s.charAt(i)), next = i + 1 < s.length() ? v(s.charAt(i + 1)) : 0;
+            total += cur < next ? -cur : cur;
+        }
+        return total;
+    }
+}
+//// majorityElement
+class Solution {
+    public int majorityElement(int[] nums) {
+        int c = 0, count = 0;
+        for (int x : nums) { if (count == 0) c = x; count += x == c ? 1 : -1; }
+        return c;
+    }
+}
+//// coinChange
+import java.util.*;
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+        for (int a = 1; a <= amount; a++) for (int c : coins) if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+}
+//// rob
+class Solution {
+    public int rob(int[] nums) {
+        int skip = 0, take = 0;
+        for (int x : nums) { int next = Math.max(take, skip + x); skip = take; take = next; }
+        return take;
+    }
+}
+//// rotate
+class Solution {
+    public int[] rotate(int[] nums, int k) {
+        int n = nums.length;
+        int[] out = new int[n];
+        for (int i = 0; i < n; i++) out[(i + k) % n] = nums[i];
+        return out;
+    }
+}
+//// countVowels
+class Solution {
+    public int countVowels(String s) {
+        int c = 0;
+        for (char ch : s.toLowerCase().toCharArray()) if ("aeiou".indexOf(ch) >= 0) c++;
+        return c;
+    }
+}
+//// removeDuplicates
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        if (nums.length == 0) return 0;
+        int w = 1;
+        for (int r = 1; r < nums.length; r++) if (nums[r] != nums[w - 1]) nums[w++] = nums[r];
+        return w;
+    }
+}

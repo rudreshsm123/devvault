@@ -13,6 +13,8 @@ public interface ProblemRepository extends JpaRepository<CodingProblem, Long> {
 
     boolean existsByTitleIgnoreCase(String title);
 
+    java.util.Optional<CodingProblem> findFirstByTitleIgnoreCase(String title);
+
     @Query("""
             SELECT p FROM CodingProblem p
             WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))

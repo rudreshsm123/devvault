@@ -3,6 +3,8 @@ package com.devvault.controller;
 import com.devvault.entity.CodingProblem;
 import com.devvault.entity.Difficulty;
 import com.devvault.entity.RevisionStatus;
+import com.devvault.service.ChallengeService;
+import com.devvault.service.JavaJudgeService;
 import com.devvault.service.ProblemService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -20,9 +22,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProblemViewController {
 
     private final ProblemService problemService;
+    private final ChallengeService challengeService;
+    private final JavaJudgeService javaJudge;
+    private final boolean readOnly;
 
-    public ProblemViewController(ProblemService problemService) {
+    public ProblemViewController(ProblemService problemService, ChallengeService challengeService,
+                                 JavaJudgeService javaJudge,
+                                 @org.springframework.beans.factory.annotation.Value("${devvault.readonly:false}") boolean readOnly) {
         this.problemService = problemService;
+        this.challengeService = challengeService;
+        this.javaJudge = javaJudge;
+        this.readOnly = readOnly;
     }
 
     @ModelAttribute("difficulties")
@@ -67,6 +77,8 @@ public class ProblemViewController {
     @GetMapping("/{id}")
     public String viewProblem(@PathVariable Long id, Model model) {
         model.addAttribute("problem", problemService.getProblemById(id));
+        challengeService.findForProblem(id).ifPresent(c ->
+                model.addAttribute("challengeJson", challengeService.clientJson(c, javaJudge.isEnabled(), !readOnly)));
         return "problems/view";
     }
 

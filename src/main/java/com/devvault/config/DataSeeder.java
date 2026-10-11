@@ -6,11 +6,10 @@ import com.devvault.entity.LearningResource;
 import com.devvault.entity.ResourceType;
 import com.devvault.repository.ProblemRepository;
 import com.devvault.repository.ResourceRepository;
-import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataSeeder implements SmartInitializingSingleton {
+public class DataSeeder {
 
     private final ProblemRepository problemRepository;
     private final ResourceRepository resourceRepository;
@@ -20,9 +19,8 @@ public class DataSeeder implements SmartInitializingSingleton {
         this.resourceRepository = resourceRepository;
     }
 
-    /** Runs before the web server starts, so visitors never see a half-filled library. */
-    @Override
-    public void afterSingletonsInstantiated() {
+    /** Creates the original starter problems and resources. Called first by {@link ContentSeeder}, before the web server starts. */
+    public void seed() {
         seedProblemIfMissing(medianOfTwoSortedArrays());
         seedProblemIfMissing(trappingRainWater());
         seedProblemIfMissing(nQueens());

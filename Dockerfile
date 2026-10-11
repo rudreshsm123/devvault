@@ -5,6 +5,7 @@ RUN mvn -q -B dependency:resolve
 COPY src ./src
 RUN mvn -q -B package -DskipTests
 
+# The runtime image has no compiler, so the opt-in Java judge (JUDGE_JAVA_ENABLED=true) needs 21-jdk instead.
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/devvault-0.0.1-SNAPSHOT.jar app.jar

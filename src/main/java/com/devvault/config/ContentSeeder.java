@@ -1,6 +1,7 @@
 package com.devvault.config;
 
 import com.devvault.config.seed.BasicsProblemsA;
+import com.devvault.config.seed.ChallengeSeedData;
 import com.devvault.config.seed.BasicsProblemsB;
 import com.devvault.config.seed.BeginnerProblems;
 import com.devvault.config.seed.EarlyBeginnerExplanations;
@@ -31,6 +32,7 @@ import com.devvault.entity.CodingProblem;
 import com.devvault.entity.Lesson;
 import com.devvault.entity.Note;
 import com.devvault.repository.LessonRepository;
+import com.devvault.service.ChallengeService;
 import com.devvault.repository.NoteRepository;
 import com.devvault.entity.LearningResource;
 import com.devvault.repository.ProblemRepository;
@@ -54,10 +56,15 @@ public class ContentSeeder implements SmartInitializingSingleton {
     private final ResourceRepository resources;
     private final LessonRepository lessons;
     private final NoteRepository notes;
+    private final ChallengeService challenges;
+    private final DataSeeder starterSeeder;
 
     public ContentSeeder(ProblemRepository problems, SnippetRepository snippets, ResourceRepository resources,
-                         LessonRepository lessons, NoteRepository notes) {
+                         LessonRepository lessons, NoteRepository notes, ChallengeService challenges,
+                         DataSeeder starterSeeder) {
         this.notes = notes;
+        this.starterSeeder = starterSeeder;
+        this.challenges = challenges;
         this.problems = problems;
         this.snippets = snippets;
         this.resources = resources;
@@ -70,6 +77,7 @@ public class ContentSeeder implements SmartInitializingSingleton {
      */
     @Override
     public void afterSingletonsInstantiated() {
+        starterSeeder.seed();                      // the original starter problems must exist before anything refers to them
         Set<String> titles = new HashSet<>();
         problems.findAll().forEach(p -> titles.add(key(p.getTitle())));
         List<CodingProblem> newProblems = new java.util.ArrayList<>();
@@ -98,6 +106,12 @@ public class ContentSeeder implements SmartInitializingSingleton {
             p.setInterviewTips(extra.get(p.getTitle()).interviewTips());
         }
         problems.saveAll(toEnrich);
+
+        // Runnable code challenges (starter code + tests) for the problems that have one.
+        for (ChallengeSeedData.Def def : ChallengeSeedData.all()) {
+            problems.findFirstByTitleIgnoreCase(def.problemTitle())
+                    .ifPresent(problem -> challenges.upsert(problem.getId(), def));
+        }
 
         Set<String> snippetTitles = new HashSet<>();
         snippets.findAll().forEach(s -> snippetTitles.add(key(s.getTitle())));

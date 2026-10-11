@@ -28,9 +28,9 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 |---|---|
 | ![Search](docs/screenshots/search.png) | ![Skills](docs/screenshots/skills-and-tech.png) |
 
-| Printable certificate |
-|---|
-| ![Certificate](docs/screenshots/certificate.png) |
+| Code challenge with instant verdict | Printable certificate |
+|---|---|
+| ![Code challenge](docs/screenshots/code-challenge.png) | ![Certificate](docs/screenshots/certificate.png) |
 
 ## Features
 
@@ -40,6 +40,7 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 - **40+ revision notes** and **165+ curated resources**.
 - **Global search** across lessons, problems, snippets, notes and resources.
 - **My Progress:** "Mark as done" on lessons and problems. Stored in the browser when signed out; stored on the server when signed in, with automatic merge on first sign-in.
+- **LeetCode-style code challenges** on 30 problems: write code in the page, press **Run tests** and get an instant verdict (Accepted / Wrong Answer / Runtime Error / Time Limit Exceeded / Compile Error) with a per-test table. **JavaScript** runs inside a Web Worker in the visitor's own browser (safe, works on the public site). **Java** is compiled and run in a separate JVM process on the server; that judge is switched on for a local copy and off on the public demo (see Security notes). An accepted solution is marked as solved automatically.
 - **Right / wrong self-check:** after revealing a solution, the learner answers "I got it right" or "I got it wrong" (the site cannot run code, so this is honest self-assessment). Wrong answers go to a "Practise again" list, right answers count as solved, and submitting an attempt moves a problem from NOT_STARTED to LEARNING.
 - **Certificates:** 14 printable certificates (one per chapter, the full learning path, and 25 / 100 / 250 problems solved), earned from the learner's own progress and saved as PDF from the browser. They are practice records, not accredited qualifications.
 - **Accounts:** registration and sign-in with BCrypt-hashed passwords, CSRF protection and per-user progress.
@@ -125,7 +126,7 @@ docker run -p 8080:8080 -e PORT=8080 devvault-cloud
 ./mvnw test
 ```
 
-100+ automated tests cover services (Mockito), controllers (MockMvc, including CSRF and sign-in rules), the seed content (every problem and lesson has its explanation, no duplicates) and the application context.
+120+ automated tests cover services (Mockito), controllers (MockMvc, including CSRF and sign-in rules), the seed content (every problem and lesson has its explanation, no duplicates) and the application context.
 
 ## Deployment
 
@@ -137,6 +138,8 @@ The `main` branch is deployed to Render from the `Dockerfile` (multi-stage build
 - CSRF protection is on for every form and for the progress API.
 - All SQL goes through JPA with bound parameters; templates escape output (`th:text`), and stored links are accepted only as same-site paths.
 - Secrets live in a git-ignored properties file or environment variables, never in the repository.
+- **Running other people's code is dangerous**, so the Java judge is a deliberate opt-in: `devvault.judge.java.enabled` is `true` for a local copy and `false` for the `cloud` profile (override with the `JUDGE_JAVA_ENABLED` environment variable, and switch the Docker runtime image from `eclipse-temurin:21-jre` to `21-jdk` because compiling needs a JDK). It limits code size, runs at most two judgements at once, caps the heap, times out each test and the whole run, and deletes its temp folder, but a separate process is **not** a full sandbox (code could still read files or use the network). Do not enable it on a server that strangers can reach unless you add OS-level isolation (a locked-down container, no network).
+- JavaScript solutions never reach the server: they run in the visitor's browser inside a Web Worker that is terminated after 4 seconds.
 - The public demo is read-only: a filter rejects every write except practice attempts, account creation and a signed-in user's own progress.
 
 ## Design decisions and honest limitations

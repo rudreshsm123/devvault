@@ -38,6 +38,30 @@
         <h3>Description</h3>
         <p th:text="${problem.description}"></p>
 
+        <section class="guide-section" id="challenge" th:if="${challengeJson != null}">
+            <h3>Code Challenge <small class="muted">write code, press Run tests, get an instant verdict</small></h3>
+            <div class="ch-toolbar">
+                <label for="ch-lang">Language</label>
+                <select id="ch-lang">
+                    <option value="js">JavaScript (runs in your browser)</option>
+                    <option value="java">Java</option>
+                </select>
+                <button type="button" id="ch-run" class="btn-primary">Run tests</button>
+                <button type="button" id="ch-reset" class="btn-secondary">Reset code</button>
+            </div>
+            <textarea id="ch-code" class="code-input" rows="14" spellcheck="false" aria-label="Your code"></textarea>
+            <div id="ch-java-note" class="callout warn" hidden>
+                <strong>Java judging is off on this server.</strong>
+                <p>Running Java means executing code on the server, so it is switched off on the public demo for safety.
+                    Run DevVault on your own computer (see the README) and Java judging works there. JavaScript works everywhere.</p>
+            </div>
+            <div id="ch-result" role="status"></div>
+        </section>
+        <script th:if="${challengeJson != null}" th:inline="javascript">
+            window.DEVVAULT_CHALLENGE = JSON.parse(/*[[${challengeJson}]]*/ '{}');
+        </script>
+        <script th:if="${challengeJson != null}" th:src="@{/js/judge.js}" defer></script>
+
         <div th:if="${problem.userAttempt == null or #strings.isEmpty(problem.userAttempt)}">
             <section class="guide-section">
                 <h3>Practice First</h3>
