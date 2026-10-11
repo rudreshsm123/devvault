@@ -38,7 +38,7 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 - **My Progress:** "Mark as done" on lessons and problems. Stored in the browser when signed out; stored on the server when signed in, with automatic merge on first sign-in.
 - **Accounts:** registration and sign-in with BCrypt-hashed passwords, CSRF protection and per-user progress.
 - **One-click practice status** (not started / learning / learned / needs revision) feeding the dashboard's "Needs Revision" list.
-- **Scroll-driven "tide" animation**, reveal-on-scroll effects and an animated signature (all disabled for visitors who prefer reduced motion).
+- **Welcome page extras:** a scroll-driven "tide" animation (water that rises as you scroll), an animated signature and the Sign in / Register buttons. Other pages use a subtle fade-in only. Motion is disabled for visitors who prefer reduced motion.
 - **Responsive layout:** the sidebar becomes a swipeable top bar on phones.
 - **REST API** under `/api` for notes, problems, resources and snippets, with consistent JSON errors.
 

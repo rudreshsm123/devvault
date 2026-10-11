@@ -10,8 +10,6 @@
         <script th:src="@{/js/tide.js}" defer></script>
         <link rel="stylesheet" th:href="@{/css/progress.css}">
         <script th:src="@{/js/progress.js}" defer></script>
-        <link rel="stylesheet" th:href="@{/css/signature.css}">
-        <script th:src="@{/js/signature.js}" defer></script>
         <meta name="author" content="Rajesh S M">
         <meta name="devvault-user" th:if="${currentUser != null}" th:content="${currentUser}">
         <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}">
@@ -24,9 +22,6 @@
         <div class="sidebar-user" th:if="${currentUser != null}">
             <span>Signed in as <strong th:text="${currentUser}"></strong></span>
             <form th:action="@{/logout}" method="post"><button type="submit" class="link-button">Sign out</button></form>
-        </div>
-        <div class="sidebar-user" th:if="${currentUser == null}">
-            <a href="/login">Sign in</a> <span>/</span> <a href="/register">Register</a>
         </div>
         <form class="sidebar-search" action="/search" method="get" role="search">
             <input type="search" name="q" placeholder="Search everything..." aria-label="Search everything" minlength="2">
@@ -47,7 +42,6 @@
             <strong>Read-only demo</strong>
             <span>You can browse and practise, but adding, editing and deleting are disabled.</span>
         </div>
-        <div class="sidebar-by">Built by <span class="signature" data-signature>Rajesh S M</span></div>
     </nav>
 </body>
 </html>

@@ -18,16 +18,6 @@ body.welcome {
     --tide-fill: linear-gradient(180deg, rgba(34, 211, 238, 0.16), rgba(124, 92, 255, 0.22));
 }
 
-/* Let the water show through the white cards and tables on the regular pages. */
-body:not(.welcome) .data-table,
-body:not(.welcome) .guide-section,
-body:not(.welcome) .chapter,
-body:not(.welcome) .stat-card,
-body:not(.welcome) .filter-bar {
-    background-color: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(1.5px);
-}
-
 /* Keep real content above the water. */
 .app-layout,
 body.welcome main,

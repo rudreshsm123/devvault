@@ -101,8 +101,10 @@
             if (reduceMotion) {
                 return;
             }
-            buildTide();
-            trackScroll();
+            if (document.body.classList.contains('welcome')) {
+                buildTide();                  // the rising water and progress line are for the welcome page only
+                trackScroll();
+            }
             reveal();
         } catch (e) {
             // Decorative only: ignore.
