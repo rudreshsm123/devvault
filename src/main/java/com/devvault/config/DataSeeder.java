@@ -6,11 +6,11 @@ import com.devvault.entity.LearningResource;
 import com.devvault.entity.ResourceType;
 import com.devvault.repository.ProblemRepository;
 import com.devvault.repository.ResourceRepository;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataSeeder implements CommandLineRunner {
+public class DataSeeder implements SmartInitializingSingleton {
 
     private final ProblemRepository problemRepository;
     private final ResourceRepository resourceRepository;
@@ -20,8 +20,9 @@ public class DataSeeder implements CommandLineRunner {
         this.resourceRepository = resourceRepository;
     }
 
+    /** Runs before the web server starts, so visitors never see a half-filled library. */
     @Override
-    public void run(String... args) {
+    public void afterSingletonsInstantiated() {
         seedProblemIfMissing(medianOfTwoSortedArrays());
         seedProblemIfMissing(trappingRainWater());
         seedProblemIfMissing(nQueens());

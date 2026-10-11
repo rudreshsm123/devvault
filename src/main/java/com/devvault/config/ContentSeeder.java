@@ -32,8 +32,7 @@ import com.devvault.entity.LearningResource;
 import com.devvault.repository.ProblemRepository;
 import com.devvault.repository.ResourceRepository;
 import com.devvault.repository.SnippetRepository;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -41,10 +40,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-/** Adds the large starter library (problems, snippets, resources). Safe to re-run: it skips anything already present. */
+/** Adds the large starter library (problems, snippets, resources). Safe to re-run: it skips anything already present. Runs before the web server starts. */
 @Component
-@Order(2)
-public class ContentSeeder implements CommandLineRunner {
+public class ContentSeeder implements SmartInitializingSingleton {
 
     private final ProblemRepository problems;
     private final SnippetRepository snippets;
@@ -61,8 +59,12 @@ public class ContentSeeder implements CommandLineRunner {
         this.lessons = lessons;
     }
 
+    /**
+     * Runs after all beans exist but BEFORE the web server starts accepting requests, so visitors can never
+     * see a half-filled library (for example zero lessons) while the data is still loading.
+     */
     @Override
-    public void run(String... args) {
+    public void afterSingletonsInstantiated() {
         Set<String> titles = new HashSet<>();
         problems.findAll().forEach(p -> titles.add(key(p.getTitle())));
         List<CodingProblem> newProblems = new java.util.ArrayList<>();
