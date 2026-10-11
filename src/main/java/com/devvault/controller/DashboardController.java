@@ -24,7 +24,7 @@ public class DashboardController {
         this.snippetService = snippetService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("noteCount", noteService.count());
         model.addAttribute("snippetCount", snippetService.count());

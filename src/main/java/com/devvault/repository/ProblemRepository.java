@@ -16,7 +16,9 @@ public interface ProblemRepository extends JpaRepository<CodingProblem, Long> {
     @Query("""
             SELECT p FROM CodingProblem p
             WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                   OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                   OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(p.topic) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(p.tags) LIKE LOWER(CONCAT('%', :keyword, '%')))
               AND (:topic IS NULL OR p.topic = :topic)
               AND (:difficulty IS NULL OR p.difficulty = :difficulty)
               AND (:practiceStatus IS NULL OR p.practiceStatus = :practiceStatus)

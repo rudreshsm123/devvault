@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DevVault - Learn to code, one problem at a time</title>
+    <meta name="description" content="DevVault is a developer knowledge base: coding problems with beginner and optimized solutions, snippets explained in plain English, notes and curated resources.">
+    <meta name="theme-color" content="#0b1020">
+    <link rel="stylesheet" th:href="@{/css/welcome.css}">
+</head>
+<body class="welcome">
+
+<div class="readonly-note" th:if="${readOnly}" role="status">
+    Read-only demo - browse and practise freely; adding, editing and deleting are disabled.
+</div>
+
+<header class="w-nav">
+    <div class="w-container">
+        <a class="w-brand" href="/">Dev<span>Vault</span></a>
+        <nav class="w-links" aria-label="Main">
+            <a href="#features">Features</a>
+            <a href="#levels">Levels</a>
+            <a href="#how">How it works</a>
+            <a href="/snippets">Snippets</a>
+            <a class="btn btn-primary" href="/problems">Start practising</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+        <div class="w-container">
+            <div>
+                <span class="pill">New: 100+ problems, 19 languages</span>
+                <h1>Your personal vault for <span class="grad">coding knowledge</span>.</h1>
+                <p class="lead">
+                    Practise real interview and real-website problems, study snippets explained in plain English,
+                    and keep every note and resource in one place. Beginner to hardest, all with solutions.
+                </p>
+                <div class="cta">
+                    <a class="btn btn-primary" href="/problems">Browse problems</a>
+                    <a class="btn btn-ghost" href="/dashboard">Open dashboard</a>
+                </div>
+                <p class="trust">
+                    <b th:text="${problemCount}">130</b> problems &middot;
+                    <b th:text="${snippetCount}">45</b> snippets &middot;
+                    <b th:text="${resourceCount}">55</b> resources &middot; free to explore
+                </p>
+            </div>
+
+            <div class="code-window" aria-label="Example snippet with meaning">
+                <div class="code-bar"><i></i><i></i><i></i><span>Debounce.js</span></div>
+<pre><span class="k">function</span> <span class="t">debounce</span>(fn, delay = <span class="s">300</span>) {
+  <span class="k">let</span> timer;
+  <span class="k">return</span> (...args) =&gt; {
+    <span class="t">clearTimeout</span>(timer);
+    timer = <span class="t">setTimeout</span>(() =&gt; fn(...args), delay);
+  };
+}
+<span class="c">// run only after typing stops</span></pre>
+                <div class="meaning"><b>Meaning:</b> every keystroke cancels the old timer and starts a new one, so the real
+                    function runs once after 300&nbsp;ms of silence - one API call instead of one per letter.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= STATS ================= -->
+    <div class="stats">
+        <div class="w-container">
+            <div class="stat"><strong th:text="${problemCount}">130</strong><span>Coding problems</span></div>
+            <div class="stat"><strong th:text="${snippetCount}">45</strong><span>Snippets with meaning</span></div>
+            <div class="stat"><strong th:text="${resourceCount}">55</strong><span>Learning resources</span></div>
+            <div class="stat"><strong th:text="${noteCount}">0</strong><span>Notes</span></div>
+        </div>
+    </div>
+
+    <!-- ================= FEATURES ================= -->
+    <section class="block" id="features">
+        <div class="w-container">
+            <div class="eyebrow">Everything in one place</div>
+            <h2>Built for learning, not just storing.</h2>
+            <p class="sub">Five tools that work together so what you study actually sticks.</p>
+
+            <div class="grid3">
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#129504;</div>
+                    <h3>Coding Problems</h3>
+                    <p>Try it yourself first, then unlock the pattern hint, a beginner solution, an optimized one and common mistakes.</p>
+                    <a class="more" href="/problems">Practise now &rarr;</a>
+                </article>
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#128161;</div>
+                    <h3>Snippets with Meaning</h3>
+                    <p>Reusable code in 19 languages, each with a plain-English explanation of what every part does.</p>
+                    <a class="more" href="/snippets">See snippets &rarr;</a>
+                </article>
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#128221;</div>
+                    <h3>Notes &amp; Revision</h3>
+                    <p>Write notes, mark what needs revision and let the dashboard remind you what to review next.</p>
+                    <a class="more" href="/notes">Open notes &rarr;</a>
+                </article>
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#128218;</div>
+                    <h3>Curated Resources</h3>
+                    <p>Official docs, free courses and reference repos for Java, web, databases, DSA and system design.</p>
+                    <a class="more" href="/resources">Browse resources &rarr;</a>
+                </article>
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#127760;</div>
+                    <h3>Real-Website Problems</h3>
+                    <p>Shopping carts, URL shorteners, rate limiters, autocomplete and seat booking - problems modelled on features real sites ship.</p>
+                    <a class="more" href="/problems?q=website">Try website problems &rarr;</a>
+                </article>
+                <article class="card">
+                    <div class="ico" aria-hidden="true">&#127919;</div>
+                    <h3>Interview Prep Guide</h3>
+                    <p>A step-by-step guide to patterns, complexity and how to explain your thinking out loud.</p>
+                    <a class="more" href="/guide">Read the guide &rarr;</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= LEVELS ================= -->
+    <section class="block levels" id="levels">
+        <div class="w-container">
+            <div class="eyebrow">Pick your level</div>
+            <h2>From first loop to toughest interview.</h2>
+            <p class="sub">Every problem has a beginner solution and an optimized one, so you can grow at your own pace.</p>
+
+            <div class="grid3">
+                <article class="card" style="--lvl: var(--good)">
+                    <span class="tag">BEGINNER</span>
+                    <h3>Build the basics</h3>
+                    <ul>
+                        <li>Strings, arrays, hash maps</li>
+                        <li>Palindromes, FizzBuzz, two pointers</li>
+                        <li>Cart totals, pagination, validators</li>
+                    </ul>
+                    <a class="more" href="/problems?difficulty=EASY">Start easy &rarr;</a>
+                </article>
+                <article class="card" style="--lvl: var(--warn)">
+                    <span class="tag">INTERMEDIATE</span>
+                    <h3>Think in patterns</h3>
+                    <ul>
+                        <li>Sliding window, heaps, DP, trees</li>
+                        <li>URL shortener, rate limiter, feed merge</li>
+                        <li>Concurrency-safe inventory</li>
+                    </ul>
+                    <a class="more" href="/problems?difficulty=MEDIUM">Level up &rarr;</a>
+                </article>
+                <article class="card" style="--lvl: var(--hot)">
+                    <span class="tag">HARDEST</span>
+                    <h3>Take on the toughest</h3>
+                    <ul>
+                        <li>Edit distance, regex matching, Sudoku</li>
+                        <li>Dijkstra, network bridges, skyline</li>
+                        <li>Design Twitter, typeahead, seat booking</li>
+                    </ul>
+                    <a class="more" href="/problems?difficulty=HARD">Challenge yourself &rarr;</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="block" id="how">
+        <div class="w-container">
+            <div class="eyebrow">How it works</div>
+            <h2>Learn the way interviews actually go.</h2>
+            <p class="sub">Attempt first, compare second. Struggling for a few minutes is where the learning happens.</p>
+
+            <div class="steps">
+                <div class="step"><h3>Pick a problem</h3><p>Filter by topic or difficulty, or search for a keyword like "cache" or "graph".</p></div>
+                <div class="step"><h3>Write your attempt</h3><p>Pseudocode or real code - your answer unlocks the solution section.</p></div>
+                <div class="step"><h3>Compare and learn</h3><p>See the pattern, beginner and optimized solutions, complexity and the mistakes to avoid.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= LANGUAGES ================= -->
+    <section class="block">
+        <div class="w-container">
+            <div class="eyebrow">Snippet library</div>
+            <h2>One vault, 19 languages.</h2>
+            <p class="sub">Search by language and read the meaning behind every line.</p>
+            <div class="chips">
+                <a class="chip" th:each="lang : ${T(com.devvault.entity.SnippetLanguage).values()}"
+                   th:href="@{/snippets(language=${lang})}" th:text="${lang}" style="text-decoration:none">JAVA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FINAL CTA ================= -->
+    <div class="w-container">
+        <section class="final">
+            <h2>Ready to start?</h2>
+            <p>Pick one problem today. Tomorrow you will recognise the pattern.</p>
+            <a class="btn btn-primary" href="/problems">Start with a problem</a>
+            <a class="btn btn-ghost" href="/dashboard">Go to dashboard</a>
+        </section>
+    </div>
+</main>
+
+<footer class="w-foot">
+    <div class="w-container">
+        <span>&copy; DevVault - a developer knowledge base.</span>
+        <span>
+            <a href="/problems">Problems</a> &middot; <a href="/snippets">Snippets</a> &middot;
+            <a href="/resources">Resources</a> &middot; <a href="/notes">Notes</a> &middot; <a href="/guide">Guide</a>
+        </span>
+    </div>
+</footer>
+
+</body>
+</html>
