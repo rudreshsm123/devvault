@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content cert-page">
+        <div class="content-header no-print">
+            <h2>Your certificate</h2>
+            <a href="/certificates" class="btn-primary">All certificates</a>
+        </div>
+
+        <div class="cert-controls no-print">
+            <label for="cert-name">Name on the certificate</label>
+            <input type="text" id="cert-name" maxlength="60" placeholder="Type your full name" autocomplete="name">
+            <button type="button" id="cert-print" class="btn-primary">Print / Save as PDF</button>
+            <p id="cert-msg" class="muted" role="status">Checking your progress...</p>
+        </div>
+
+        <div id="cert" class="certificate" hidden
+             th:attr="data-type=${type},data-lessons=${requiredLessonIds},data-problems=${requiredProblems}">
+            <div class="cert-frame">
+                <div class="cert-brand">Dev<span>Vault</span></div>
+                <div class="cert-kicker">Certificate of Achievement</div>
+                <p class="cert-line">This certifies that</p>
+                <div id="cert-name-out" class="cert-name">Your Name</div>
+                <p class="cert-line">has <span th:text="${achievement}">completed a course</span>.</p>
+                <div class="cert-title" th:text="${title}">Title</div>
+                <div class="cert-footer">
+                    <div><span id="cert-date"></span><small>Date</small></div>
+                    <div class="cert-seal" aria-hidden="true">&#10003;</div>
+                    <div><span id="cert-id"></span><small>Certificate ID</small></div>
+                </div>
+                <p class="cert-fine">Issued by DevVault as a record of practice. It is not an accredited qualification.</p>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/js/certificates.js}" defer></script>
+</body>
+</html>

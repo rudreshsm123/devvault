@@ -132,3 +132,63 @@ tr.done { background-color: rgba(22, 163, 74, 0.06); }
     .sidebar ul { scrollbar-width: none; }
     .sidebar ul::-webkit-scrollbar { display: none; }
 }
+
+/* ---------- Self-check (right / wrong) ---------- */
+.selfcheck { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0 0; }
+.sc-btn { padding: 9px 16px; border-radius: 8px; border: 2px solid; font-weight: 700; cursor: pointer; background: #fff; }
+.sc-right { border-color: #16a34a; color: #166534; }
+.sc-right:hover, .sc-right.chosen { background: #16a34a; color: #fff; }
+.sc-wrong { border-color: #dc2626; color: #991b1b; }
+.sc-wrong:hover, .sc-wrong.chosen { background: #dc2626; color: #fff; }
+.sc-msg { font-size: 0.9rem; color: #475569; }
+
+tr.wrong td:first-child::before,
+li.wrong > a::before { content: "\2717"; color: #dc2626; font-weight: 800; margin-right: 8px; }
+li.wrong > a { color: #b91c1c; }
+tr.wrong { background-color: rgba(220, 38, 38, 0.05); }
+
+/* ---------- Certificates ---------- */
+.cert-card { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; justify-content: space-between;
+    padding: 12px 0; border-top: 1px solid #e5e7eb; }
+.cert-card > div { flex: 1 1 260px; }
+.cert-status { font-weight: 700; color: #64748b; }
+.cert-card.earned .cert-status { color: #15803d; }
+.cert-card.earned .cert-status::before { content: "\2713 "; }
+.cert-open { padding: 8px 14px; border-radius: 6px; background: #2563eb; color: #fff; text-decoration: none; font-weight: 600; }
+.cert-open.disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; pointer-events: none; }
+
+.cert-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px; }
+.cert-controls input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; min-width: 240px; }
+.cert-controls p { flex-basis: 100%; margin: 4px 0 0; }
+
+.certificate { background: #fffdf7; padding: 16px; border-radius: 6px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12); max-width: 980px; }
+.cert-frame { border: 6px double #b8860b; padding: 40px 36px 28px; text-align: center;
+    background: radial-gradient(circle at 50% 0, rgba(37, 99, 235, 0.07), transparent 60%); }
+.cert-brand { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: #0f172a; }
+.cert-brand span { color: #0891b2; }
+.cert-kicker { margin: 10px 0 22px; letter-spacing: 0.35em; text-transform: uppercase; font-size: 0.85rem; color: #92400e; }
+.cert-line { margin: 8px 0; color: #475569; font-size: 1.05rem; }
+.cert-name { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: clamp(2rem, 5vw, 3.2rem);
+    color: #0f172a; border-bottom: 2px solid #b8860b; display: inline-block; padding: 4px 28px; margin: 6px 0 14px; min-width: 50%; }
+.cert-name.placeholder { color: #94a3b8; }
+.cert-title { margin: 14px 0 26px; font-size: 1.5rem; font-weight: 800; color: #1e3a8a; }
+.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-top: 18px; }
+.cert-footer > div { flex: 1; display: flex; flex-direction: column; border-top: 1px solid #94a3b8; padding-top: 6px; font-weight: 600; }
+.cert-footer small { color: #64748b; font-weight: 400; }
+.cert-footer .cert-seal { flex: 0 0 74px; height: 74px; border: 3px solid #b8860b; border-radius: 50%; color: #b8860b;
+    font-size: 2rem; display: grid; place-items: center; background: #fff7d6; }
+.cert-fine { margin: 18px 0 0; font-size: 0.78rem; color: #64748b; }
+
+@media (max-width: 800px) {
+    .cert-frame { padding: 24px 14px 18px; }
+    .cert-footer { flex-direction: column; align-items: stretch; }
+    .cert-footer .cert-seal { align-self: center; }
+}
+
+@media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    .sidebar, .no-print, .tide, .tide-progress { display: none !important; }
+    body, .app-layout, .content { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+    .certificate { box-shadow: none; max-width: none; padding: 0; }
+    .cert-frame { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

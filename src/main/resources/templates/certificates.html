@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Certificates</h2>
+        </div>
+        <p class="muted">
+            Earn a certificate by finishing lessons and solving problems. Press <strong>Mark as done</strong> on a
+            lesson, or <strong>I got it right</strong> after you compare your attempt with a problem's solution.
+            Certificates are practice records issued by DevVault (print them or save them as a PDF); they are not
+            an accredited qualification.
+        </p>
+        <p id="cert-summary"><strong>Checking your progress...</strong></p>
+
+        <section class="guide-section">
+            <h3>Learning path</h3>
+            <div class="cert-card" data-cert="path" th:attr="data-lessons=${allLessonIds}">
+                <div>
+                    <strong>DevVault Learning Path</strong>
+                    <div class="muted" th:text="'Finish all ' + ${lessonCount} + ' lessons'"></div>
+                </div>
+                <span class="cert-status">...</span>
+                <a class="cert-open disabled" href="/certificate?type=path">Open certificate</a>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h3>Chapters</h3>
+            <div class="cert-card" th:each="c : ${chapters}" th:attr="data-cert='chapter-' + ${c.number},data-lessons=${c.lessonIds}">
+                <div>
+                    <strong th:text="'Chapter ' + ${c.number} + ': ' + ${c.title}"></strong>
+                    <div class="muted" th:text="'Finish all ' + ${c.lessonCount} + ' lessons'"></div>
+                </div>
+                <span class="cert-status">...</span>
+                <a class="cert-open disabled" th:href="@{/certificate(type='chapter-' + ${c.number})}">Open certificate</a>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h3>Problem solver</h3>
+            <div class="cert-card" th:each="m : ${milestones}" th:attr="data-cert='solver-' + ${m},data-problems=${m}">
+                <div>
+                    <strong th:text="${m} + ' Problems Solved'"></strong>
+                    <div class="muted" th:text="'Solve ' + ${m} + ' of the ' + ${problemCount} + ' problems (press I got it right after each one)'"></div>
+                </div>
+                <span class="cert-status">...</span>
+                <a class="cert-open disabled" th:href="@{/certificate(type='solver-' + ${m})}">Open certificate</a>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/certificates.js}" defer></script>
+</body>
+</html>

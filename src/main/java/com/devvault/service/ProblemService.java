@@ -81,6 +81,9 @@ public class ProblemService {
     public CodingProblem saveAttempt(Long id, String attempt) {
         CodingProblem problem = getProblemById(id);
         problem.setUserAttempt(attempt);
+        if (problem.getPracticeStatus() == null || problem.getPracticeStatus() == RevisionStatus.NOT_STARTED) {
+            problem.setPracticeStatus(RevisionStatus.LEARNING);        // an attempt means it is no longer "not started"
+        }
         return problemRepository.save(problem);
     }
 

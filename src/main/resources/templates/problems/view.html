@@ -18,8 +18,8 @@
             <dt>Difficulty</dt>
             <dd th:text="${problem.difficulty}"></dd>
 
-            <dt>Practice Status</dt>
-            <dd th:text="${problem.practiceStatus}"></dd>
+            <dt th:unless="${readOnly}">Practice Status</dt>
+            <dd th:unless="${readOnly}" th:text="${problem.practiceStatus}"></dd>
 
             <dt>Tags</dt>
             <dd th:text="${problem.tags}"></dd>
@@ -108,6 +108,27 @@
                     pattern? Is your time or space complexity the same, better, or worse? If worse,
                     which specific step in your approach caused the extra cost - an extra loop, a
                     missing early exit, or an unnecessary data structure?</p>
+            </section>
+
+            <section class="guide-section">
+                <h3>How did you do?</h3>
+                <p class="muted">DevVault cannot run your code, so compare your attempt with the solution above and
+                    answer honestly. Your answer updates your progress and counts toward your certificates.</p>
+
+                <form class="selfcheck" method="post" th:unless="${readOnly}"
+                      th:action="@{/problems/{id}/status(id=${problem.id})}" data-kind="problem"
+                      th:attr="data-id=${problem.id},data-title=${problem.title},data-url=@{/problems/{id}(id=${problem.id})}">
+                    <button type="submit" name="status" value="LEARNED" data-result="right" class="sc-btn sc-right">I got it right</button>
+                    <button type="submit" name="status" value="NEEDS_REVISION" data-result="wrong" class="sc-btn sc-wrong">I got it wrong</button>
+                    <span class="sc-msg" role="status"></span>
+                </form>
+
+                <div class="selfcheck" th:if="${readOnly}" data-kind="problem"
+                     th:attr="data-id=${problem.id},data-title=${problem.title},data-url=@{/problems/{id}(id=${problem.id})}">
+                    <button type="button" data-result="right" class="sc-btn sc-right">I got it right</button>
+                    <button type="button" data-result="wrong" class="sc-btn sc-wrong">I got it wrong</button>
+                    <span class="sc-msg" role="status"></span>
+                </div>
             </section>
         </div>
 

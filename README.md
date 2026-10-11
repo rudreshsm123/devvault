@@ -28,6 +28,10 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 |---|---|
 | ![Search](docs/screenshots/search.png) | ![Skills](docs/screenshots/skills-and-tech.png) |
 
+| Printable certificate |
+|---|
+| ![Certificate](docs/screenshots/certificate.png) |
+
 ## Features
 
 - **Learn path** (`/learn`): 10 chapters and 60 lessons from "your first program" to system design and behavioural interviews.
@@ -36,6 +40,8 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 - **40+ revision notes** and **165+ curated resources**.
 - **Global search** across lessons, problems, snippets, notes and resources.
 - **My Progress:** "Mark as done" on lessons and problems. Stored in the browser when signed out; stored on the server when signed in, with automatic merge on first sign-in.
+- **Right / wrong self-check:** after revealing a solution, the learner answers "I got it right" or "I got it wrong" (the site cannot run code, so this is honest self-assessment). Wrong answers go to a "Practise again" list, right answers count as solved, and submitting an attempt moves a problem from NOT_STARTED to LEARNING.
+- **Certificates:** 14 printable certificates (one per chapter, the full learning path, and 25 / 100 / 250 problems solved), earned from the learner's own progress and saved as PDF from the browser. They are practice records, not accredited qualifications.
 - **Accounts:** registration and sign-in with BCrypt-hashed passwords, CSRF protection and per-user progress.
 - **One-click practice status** (not started / learning / learned / needs revision) feeding the dashboard's "Needs Revision" list.
 - **Welcome page extras:** a scroll-driven "tide" animation (water that rises as you scroll), an animated signature and the Sign in / Register buttons. Other pages use a subtle fade-in only. Motion is disabled for visitors who prefer reduced motion.
@@ -119,7 +125,7 @@ docker run -p 8080:8080 -e PORT=8080 devvault-cloud
 ./mvnw test
 ```
 
-92 automated tests cover services (Mockito), controllers (MockMvc, including CSRF and sign-in rules), the seed content (every problem and lesson has its explanation, no duplicates) and the application context.
+100+ automated tests cover services (Mockito), controllers (MockMvc, including CSRF and sign-in rules), the seed content (every problem and lesson has its explanation, no duplicates) and the application context.
 
 ## Deployment
 

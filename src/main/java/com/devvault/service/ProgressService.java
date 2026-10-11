@@ -14,6 +14,7 @@ import java.util.Set;
 public class ProgressService {
 
     private static final Set<String> KINDS = Set.of("problem", "lesson");
+    private static final Set<String> RESULTS = Set.of("right", "wrong");
     private static final int MAX_TEXT = 255;
 
     private final UserProgressRepository repository;
@@ -32,11 +33,38 @@ public class ProgressService {
         validate(kind, itemId, title, url);
         Optional<UserProgress> existing = repository.findByUserIdAndKindAndItemId(userId, kind, itemId);
         if (existing.isPresent()) {
-            repository.delete(existing.get());
+            UserProgress item = existing.get();
+            if ("wrong".equals(item.getResult())) {          // "Mark as done" after a wrong attempt turns it into solved
+                item.setResult("right");
+                item.setDoneAt(System.currentTimeMillis());
+                repository.save(item);
+                return true;
+            }
+            repository.delete(item);
             return false;
         }
         repository.save(new UserProgress(userId, kind, itemId, title, url, System.currentTimeMillis()));
         return true;
+    }
+
+    /**
+     * Records how a problem attempt went: "right" counts as solved, "wrong" means practise it again.
+     * Saving a result again simply replaces the previous one.
+     */
+    @Transactional
+    public void setResult(Long userId, String kind, Long itemId, String title, String url, String result) {
+        validate(kind, itemId, title, url);
+        if (result == null || !RESULTS.contains(result)) {
+            throw new IllegalArgumentException("result must be 'right' or 'wrong'");
+        }
+        Optional<UserProgress> existing = repository.findByUserIdAndKindAndItemId(userId, kind, itemId);
+        if (existing.isPresent()) {
+            existing.get().setResult(result);
+            existing.get().setDoneAt(System.currentTimeMillis());
+            repository.save(existing.get());
+        } else {
+            repository.save(new UserProgress(userId, kind, itemId, title, url, System.currentTimeMillis(), result));
+        }
     }
 
     /** Adds items (for example progress collected in the browser before signing in) without removing anything. */
@@ -48,7 +76,8 @@ public class ProgressService {
             if (repository.findByUserIdAndKindAndItemId(userId, item.getKind(), item.getItemId()).isEmpty()) {
                 repository.save(new UserProgress(userId, item.getKind(), item.getItemId(),
                         item.getTitle(), item.getUrl(),
-                        item.getDoneAt() > 0 ? item.getDoneAt() : System.currentTimeMillis()));
+                        item.getDoneAt() > 0 ? item.getDoneAt() : System.currentTimeMillis(),
+                        RESULTS.contains(item.getResult()) ? item.getResult() : "right"));
                 added++;
             }
         }

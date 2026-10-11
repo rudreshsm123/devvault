@@ -22,7 +22,7 @@
                         th:selected="${d == selectedDifficulty}"></option>
             </select>
 
-            <select name="practiceStatus" aria-label="Practice status">
+            <select name="practiceStatus" aria-label="Practice status" th:unless="${readOnly}">
                 <option value="">Any practice status</option>
                 <option th:each="s : ${practiceStatuses}" th:value="${s}" th:text="${s}"
                         th:selected="${s == selectedPracticeStatus}"></option>
@@ -38,7 +38,7 @@
                 <th>Title</th>
                 <th>Topic</th>
                 <th>Difficulty</th>
-                <th>Practice Status</th>
+                <th th:unless="${readOnly}">Practice Status</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -47,7 +47,7 @@
                 <td th:text="${problem.title}"></td>
                 <td th:text="${problem.topic}"></td>
                 <td th:text="${problem.difficulty}"></td>
-                <td th:text="${problem.practiceStatus}"></td>
+                <td th:unless="${readOnly}" th:text="${problem.practiceStatus}"></td>
                 <td class="actions">
                     <a th:href="@{/problems/{id}(id=${problem.id})}">View</a>
                     <a th:href="@{/problems/{id}/edit(id=${problem.id})}">Edit</a>

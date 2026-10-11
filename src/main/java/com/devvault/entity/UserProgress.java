@@ -38,16 +38,25 @@ public class UserProgress {
     @Column(nullable = false)
     private long doneAt;
 
+    /** "right" (solved / finished) or "wrong" (attempted but not solved: practise again). Null means "right". */
+    @Column(length = 10)
+    private String result;
+
     public UserProgress() {
     }
 
     public UserProgress(Long userId, String kind, Long itemId, String title, String url, long doneAt) {
+        this(userId, kind, itemId, title, url, doneAt, "right");
+    }
+
+    public UserProgress(Long userId, String kind, Long itemId, String title, String url, long doneAt, String result) {
         this.userId = userId;
         this.kind = kind;
         this.itemId = itemId;
         this.title = title;
         this.url = url;
         this.doneAt = doneAt;
+        this.result = result;
     }
 
     public Long getId() { return id; }
@@ -57,4 +66,7 @@ public class UserProgress {
     public String getTitle() { return title; }
     public String getUrl() { return url; }
     public long getDoneAt() { return doneAt; }
+    public String getResult() { return result == null ? "right" : result; }
+    public void setResult(String result) { this.result = result; }
+    public void setDoneAt(long doneAt) { this.doneAt = doneAt; }
 }
