@@ -5,11 +5,12 @@ This page explains how DevVault is put together and why. The diagrams are [Merma
 - [1. Request flow](#1-request-flow)
 - [2. Spaced repetition and the weakness dashboard](#2-spaced-repetition-and-the-weakness-dashboard)
 - [3. The daily plan](#3-the-daily-plan)
-- [4. The AI explainer](#4-the-ai-explainer)
-- [5. Practice drills](#5-practice-drills)
-- [6. Testing, CI and deployment](#6-testing-ci-and-deployment)
-- [7. Decisions and trade-offs](#7-decisions-and-trade-offs)
-- [8. Known limitations](#8-known-limitations)
+- [4. The mock interview](#4-the-mock-interview)
+- [5. The AI explainer](#5-the-ai-explainer)
+- [6. Practice drills](#6-practice-drills)
+- [7. Testing, CI and deployment](#7-testing-ci-and-deployment)
+- [8. Decisions and trade-offs](#8-decisions-and-trade-offs)
+- [9. Known limitations](#9-known-limitations)
 
 ## 1. Request flow
 
@@ -101,7 +102,39 @@ flowchart TD
 - An item counts as done when the attempt log has an answer for it since the start of the day.
 - A unique key on user, day and position means that if two tabs open the plan at the same moment, one save wins and the other simply reads it back.
 
-## 4. The AI explainer
+## 4. The mock interview
+
+A timed round of 5, 10 or 15 drills, 90 seconds each, on one topic or a mix.
+
+```mermaid
+sequenceDiagram
+    participant U as Learner (browser)
+    participant C as InterviewController
+    participant S as InterviewService
+    participant P as ProgressService
+
+    U->>C: POST /interview/start (topic, level, count)
+    C->>S: start(...)
+    S-->>C: new session (questions picked, deadline fixed)
+    C-->>U: redirect to /interview/{id}
+    U->>C: GET /interview/{id}
+    C-->>U: questions only, no answers,<br/>and the seconds left (from the server clock)
+    Note over U: countdown runs in the browser
+    U->>C: POST /api/me/interview/{id}/finish (answers)<br/>on Finish or when time runs out
+    C->>S: finish(...)
+    S->>S: grade on the server, check the deadline
+    S->>P: record each question as right or wrong
+    C-->>U: score, then the page reloads as the report
+```
+
+- **No answers on the page.** The test page is built from a `Question` record that has no answer or explanation field, so nothing can be read from the HTML or the network. This is why the interview does not reuse the practice drill's check endpoint, which reveals the answer.
+- **The server owns the clock.** The page counts down from the seconds the server says are left, using a monotonic browser timer, so changing the computer's clock does nothing. If answers arrive more than 10 seconds after the deadline, they are ignored and every question counts as unanswered; the report says so.
+- **Idempotent finish.** Submitting twice (a double click, a retry after a network error) returns the first result and grades nothing again.
+- **Ownership.** An interview is looked up by id *and* user, so someone else's interview is a 404 rather than a 403 and its existence is not revealed.
+- **Mixed interviews** take one question from each topic in turn, so ten questions cover many topics instead of clustering in one.
+- **Feeds the other features.** Each question is saved through the same path as a normal answer, so misses are scheduled for review and show up in the weak-topic statistics and tomorrow's daily plan.
+
+## 5. The AI explainer
 
 After a wrong drill answer, a signed-in learner can ask for an explanation written for **their** answer.
 
@@ -135,11 +168,11 @@ Safeguards, because this endpoint can spend money and takes user text:
 
 Provider choice in practice: the hosted free tiers are faster and stronger, a small local model needs no key or internet but takes roughly 30 to 40 seconds on a laptop CPU, and the built-in explanation is always available as the floor.
 
-## 5. Practice drills
+## 6. Practice drills
 
 There are 10,000 auto-graded drills, but none is stored in the database. `DrillCatalog` builds them deterministically from a set of question **families** (algorithms, Java, application code), each of which generates variants with a computed correct answer. A drill's id (1 to 10,000) is therefore stable, and its answer is checked on the server by `DrillService`, so the right answer is never sent to the page until the learner has tried.
 
-## 6. Testing, CI and deployment
+## 7. Testing, CI and deployment
 
 ```mermaid
 flowchart LR
@@ -160,7 +193,7 @@ flowchart LR
 - **Context tests** start the whole application, one against MySQL (the `local` profile) and one against H2 (the `cloud` profile), which is why CI starts a MySQL container.
 - The Docker image is multi-stage: Maven builds the jar, and a JRE-only image runs it. The Java judge needs a JDK, so it stays off in that image.
 
-## 7. Decisions and trade-offs
+## 8. Decisions and trade-offs
 
 | Decision | Why | What it costs |
 |---|---|---|
@@ -168,18 +201,20 @@ flowchart LR
 | In-memory H2 on the public demo | Free hosting with a shareable link | Accounts and history vanish on restart |
 | Leitner boxes instead of SM-2 | Easy to explain and test, predictable intervals | Less adaptive than a per-item ease factor |
 | Daily plan saved, not recomputed | The list stays stable while you work through it, and "done" is easy to define | One more table; a plan built from stale data stays until tomorrow |
+| Mock interview grades only on finish | Answers cannot be read from the page | No instant per-question feedback while the clock runs |
 | Attempt log kept separately from the latest result | Accurate accuracy and streak statistics without losing the simple "current state" row | One extra table that grows with use |
 | AI behind a one-method interface that never throws | New providers are one small class, and a failure can never break the page | Errors are logged, not shown to the learner |
 | Built-in explanation as the permanent fallback | The feature works with no key, no quota and no internet | The "AI" text can be generic |
 | Running submitted Java in a separate process, opt-in only | Real judging for local use | Not a full sandbox, so it is off on the public server |
 | Hosted AI is opt-in, off by default | The demo costs nothing and cannot be abused for free tokens | Recruiters see the built-in text unless a key is set |
 
-## 8. Known limitations
+## 9. Known limitations
 
 - No login throttling, e-mail verification or password reset yet.
 - Schema changes rely on Hibernate's automatic update rather than migration scripts (Flyway is on the roadmap).
 - The AI rate limiter and the attempt history on the demo live in memory, so they reset on restart.
 - Review scheduling and the daily plan are not available to signed-out visitors.
+- The mock interview uses drills only (not coding problems), and its time limit is fixed at 90 seconds a question.
 - The plan is only drills and due problems; lessons are not scheduled yet.
 - Opening `/plan` writes the day's plan on first view, which is a small side effect on a GET request (it is idempotent, and the demo's read-only filter does not block it).
 - Streaks use the server's time zone, not the learner's.

@@ -44,6 +44,14 @@ public class DrillService {
         return drills.stream().collect(Collectors.groupingBy(Drill::topic, TreeMap::new, Collectors.counting()));
     }
 
+    /** Every drill of a topic and level; a blank topic or level means "any". */
+    public List<Drill> matching(String topic, String difficulty) {
+        return drills.stream()
+                .filter(d -> topic == null || topic.isBlank() || d.topic().equalsIgnoreCase(topic))
+                .filter(d -> difficulty == null || difficulty.isBlank() || d.difficulty().equalsIgnoreCase(difficulty))
+                .toList();
+    }
+
     public Map<String, List<Integer>> idsByTopic() {
         return idsByTopic;
     }

@@ -24,6 +24,7 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 
 - **Spaced repetition.** Answers to drills and problems are scheduled with Leitner boxes (a wrong answer returns tomorrow, a right one after 2, 4, 8, 16, then 32 days). The **Review & Insights** page shows what is due, weak topics (at least 3 answers and under 70% right), accuracy per topic, a streak and a 12-week heatmap.
 - **Daily plan.** Signed-in learners get 10 questions a day: up to 5 reviews that are due, 3 new questions from their weak topics, and the rest new questions from the topics they have practised least. The plan is saved for the day and shows progress as the questions are answered.
+- **Mock interview.** A timed round of 5, 10 or 15 drills (90 seconds each) on one topic or a mix. The correct answers stay on the server until you finish, the clock is the server's, and you get a score, a verdict, a per-topic breakdown and the explanation for every miss. Every question also goes into your review schedule.
 - **AI explainer.** After a wrong drill answer, signed-in learners can ask for an explanation written for their specific answer. It is off by default and always falls back to the drill's built-in explanation.
   - `AI_PROVIDER=claude` uses hosted Claude through the Anthropic Java SDK (set `ANTHROPIC_API_KEY`; the model defaults to `claude-opus-5-5`, override with `AI_CLAUDE_MODEL`, for example `claude-haiku-5-5` for lower cost).
   - `AI_PROVIDER=ollama` uses a small model on your own machine (`ollama pull qwen2.5:3b`), with no key and no internet. On a laptop with an old NVIDIA GPU (for example an MX230) Ollama's GPU backend can crash with "unsupported toolchain"; start it CPU-only with `CUDA_VISIBLE_DEVICES=-1 ollama serve`. Expect 30 to 40 seconds per explanation on a CPU.
@@ -169,7 +170,6 @@ The `main` branch is deployed to Render from the `Dockerfile` (multi-stage build
 ## Roadmap
 
 - Flyway migrations instead of automatic schema updates.
-- Timed interview mode with a score report.
 - Login rate limiting and password reset by e-mail.
 - Integration tests with Testcontainers against a real MySQL.
 - Roles, so only an admin can edit content in a hosted deployment.

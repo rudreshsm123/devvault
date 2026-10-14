@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Interview report</h2>
+            <a class="btn-primary" href="/interview">Take another</a>
+        </div>
+
+        <div class="stat-row">
+            <div class="stat"><span class="stat-num" th:text="${report.score} + ' / ' + ${report.total}">0 / 0</span><span class="stat-label">score</span></div>
+            <div class="stat"><span class="stat-num" th:text="${report.percent} + '%'">0%</span><span class="stat-label" th:text="${report.verdict}">verdict</span></div>
+            <div class="stat"><span class="stat-num" th:text="${report.secondsUsed / 60} + ':' + ${#numbers.formatInteger(report.secondsUsed % 60, 2)}">0:00</span><span class="stat-label" th:text="'of ' + ${report.durationSeconds / 60} + ' min'">used</span></div>
+        </div>
+
+        <p class="drill-verdict is-wrong" th:if="${report.late}">
+            Your answers arrived after the time was over, so none were counted.
+        </p>
+
+        <section class="guide-section" th:if="${not report.topics.isEmpty()}">
+            <h3>By topic</h3>
+            <div class="topic-bar" th:each="t : ${report.topics}">
+                <div class="topic-bar-label">
+                    <span th:text="${t.topic}">Topic</span>
+                    <span class="muted" th:text="${t.right} + ' of ' + ${t.total}">0 of 0</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" th:classappend="${t.right * 100 < t.total * 70} ? 'is-weak'"
+                                                  th:style="'width:' + (${t.total} == 0 ? 0 : ${t.right} * 100 / ${t.total}) + '%'"></div></div>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h3>Question by question</h3>
+            <ol class="interview-review">
+                <li th:each="l : ${report.lines}" th:classappend="${l.right} ? 'is-right' : 'is-wrong'">
+                    <p><strong th:text="${l.right} ? '✓ Right' : '✗ Wrong'">Right</strong>
+                        <a th:href="${l.url}" th:text="${l.title}">Drill</a>
+                        <span class="muted" th:text="${l.topic}">Topic</span></p>
+                    <p th:if="${!l.right}">
+                        Your answer: <code th:text="${l.given != null} ? ${l.given} : '(no answer)'">x</code>
+                        · Correct answer: <code th:text="${l.correctAnswer}">y</code>
+                    </p>
+                    <p class="muted" th:text="${l.explanation}">Why</p>
+                </li>
+            </ol>
+        </section>
+
+        <p class="muted">
+            Everything you missed is now in your review schedule.
+            <a href="/insights">Review &amp; Insights</a> · <a href="/plan">Daily plan</a>
+        </p>
+    </main>
+</div>
+</body>
+</html>

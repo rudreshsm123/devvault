@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Mock interview</h2>
+        </div>
+        <p class="muted">
+            A timed round of drills, like a screening test: <strong th:text="${secondsPerQuestion}">90</strong> seconds
+            per question, no answers shown until you finish, then a score report. Every question is added to your
+            progress, so the ones you miss come back through spaced repetition.
+        </p>
+
+        <p class="drill-verdict is-wrong" th:if="${error}">No questions match that choice. Try another topic or level.</p>
+
+        <section class="guide-section" th:if="${currentUser == null}">
+            <p>Sign in to take a timed interview and keep your scores.</p>
+            <p><a class="btn-primary" href="/login">Sign in</a> <a href="/register">Create an account</a></p>
+        </section>
+
+        <form class="guide-section interview-form" method="post" th:action="@{/interview/start}" th:if="${currentUser != null}">
+            <label>Topic
+                <select name="topic">
+                    <option value="">Mixed (every topic)</option>
+                    <option th:each="t : ${topics}" th:value="${t.key}" th:text="${t.key}"></option>
+                </select>
+            </label>
+            <label>Level
+                <select name="difficulty">
+                    <option value="">Any</option>
+                    <option th:each="d : ${T(java.util.List).of('Beginner','Intermediate','Advanced')}" th:value="${d}" th:text="${d}"></option>
+                </select>
+            </label>
+            <label>Questions
+                <select name="count">
+                    <option value="5">5 (7 min 30 s)</option>
+                    <option value="10" selected>10 (15 min)</option>
+                    <option value="15">15 (22 min 30 s)</option>
+                </select>
+            </label>
+            <button type="submit" class="btn-primary">Start the clock</button>
+        </form>
+
+        <section class="guide-section" th:if="${recent != null and not recent.isEmpty()}">
+            <h3>Your last interviews</h3>
+            <ul class="result-list">
+                <li th:each="s : ${recent}">
+                    <a th:href="@{/interview/{id}(id=${s.id})}"
+                       th:text="${s.score} + ' / ' + ${#strings.listSplit(s.drillIds, ',').size()} + ' · ' + (${s.topic} != null ? ${s.topic} : 'Mixed')">Score</a>
+                    <span class="muted" th:if="${s.late}">submitted late</span>
+                </li>
+            </ul>
+        </section>
+    </main>
+</div>
+</body>
+</html>

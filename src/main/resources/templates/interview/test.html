@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Mock interview <span class="muted" th:text="'· ' + (${test.topic} != null ? ${test.topic} : 'Mixed')">Mixed</span></h2>
+            <div class="interview-timer" id="timer" aria-live="off">--:--</div>
+        </div>
+
+        <div id="interview" th:attr="data-id=${test.id},data-remaining=${test.remainingSeconds},data-total=${test.durationSeconds}">
+            <ol class="interview-questions">
+                <li class="iq" th:each="q : ${test.questions}" th:attr="data-drill=${q.drillId},data-kind=${q.kind}">
+                    <p class="drill-question" th:text="${q.question}">Question</p>
+                    <pre class="note-content" th:if="${not #strings.isEmpty(q.code)}"><code th:text="${q.code}"></code></pre>
+                    <div class="drill-choices" th:if="${q.kind.name() == 'CHOICE'}">
+                        <label th:each="c : ${q.choices}">
+                            <input type="radio" th:name="'q' + ${q.drillId}" th:value="${c}"> <span th:text="${c}"></span>
+                        </label>
+                    </div>
+                    <input th:if="${q.kind.name() != 'CHOICE'}" type="text" class="iq-input" autocomplete="off"
+                           th:placeholder="${q.kind.name() == 'NUMBER'} ? 'Type a whole number' : 'Type exactly what is printed'"
+                           aria-label="Your answer">
+                </li>
+            </ol>
+
+            <p class="muted">Unanswered questions count as wrong. Answers are checked when you finish or when the time runs out.</p>
+            <button type="button" id="finish-btn" class="btn-primary">Finish and see my score</button>
+            <p id="interview-msg" class="muted" aria-live="polite"></p>
+        </div>
+    </main>
+</div>
+<script th:src="@{/js/interview.js}" defer></script>
+</body>
+</html>

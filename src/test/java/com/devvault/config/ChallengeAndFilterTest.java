@@ -100,7 +100,8 @@ class ChallengeAndFilterTest {
     @Test
     void readOnlyModeStillAllowsPracticeAccountsOwnProgressAndTheJudge() throws Exception {
         for (String uri : List.of("/problems/5/attempt", "/problems/5/attempt/clear", "/register",
-                "/api/me/progress/toggle", "/api/me/progress/result", "/api/me/progress/import", "/api/judge/java", "/api/drills/5/check")) {
+                "/api/me/progress/toggle", "/api/me/progress/result", "/api/me/progress/import", "/api/judge/java", "/api/drills/5/check",
+                "/api/me/ai/explain", "/interview/start", "/api/me/interview/12/finish")) {
             assertThat(run("POST", uri).getStatus()).as(uri).isEqualTo(200);
         }
         assertThat(run("GET", "/problems").getStatus()).isEqualTo(200);

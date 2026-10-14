@@ -254,3 +254,19 @@ tr.wrong { background-color: rgba(220, 38, 38, 0.05); }
 .plan-tag.plan-weak { background: #fee2e2; color: #991b1b; }
 .plan-tag.plan-new { background: #dcfce7; color: #166534; }
 .plan-complete { font-weight: 700; color: #166534; }
+
+/* ---------- Mock interview ---------- */
+.interview-form { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+.interview-form label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; }
+.interview-form select { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+.interview-timer { font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; padding: 6px 14px;
+    border-radius: 8px; background: #0f172a; color: #f8fafc; }
+.interview-timer.is-low { background: #b91c1c; }
+.interview-questions { padding-left: 1.2em; display: grid; gap: 18px; }
+.interview-questions .iq { padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; }
+.iq-input { padding: 8px 10px; min-width: 240px; max-width: 100%; }
+.interview-review { padding-left: 1.2em; display: grid; gap: 12px; }
+.interview-review li { padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+.interview-review li.is-right { border-color: #16a34a; background: rgba(22, 163, 74, 0.07); }
+.interview-review li.is-wrong { border-color: #dc2626; background: rgba(220, 38, 38, 0.06); }
+.interview-review p { margin: 4px 0; }
