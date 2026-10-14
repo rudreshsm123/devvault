@@ -1,5 +1,7 @@
 # DevVault
 
+[![CI](https://github.com/rudreshsm123/devvault/actions/workflows/ci.yml/badge.svg)](https://github.com/rudreshsm123/devvault/actions/workflows/ci.yml)
+
 **A full-stack Java learning platform for interview preparation: a 60-lesson learning path, 331 coding problems with line-by-line code explanations, explained snippets, notes, resources and personal progress tracking.**
 
 Built by **Rajesh S M** with Java 21, Spring Boot, JPA/Hibernate, MySQL, Spring Security and Thymeleaf.
