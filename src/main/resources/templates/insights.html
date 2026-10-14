@@ -40,12 +40,14 @@
                 </p>
                 <th:block th:unless="${insights.due.isEmpty()}">
                     <p><a class="btn-primary" href="/review/next">Start reviewing</a></p>
-                    <ul class="result-list">
+                    <ul class="result-list no-progress-mark">
                         <li th:each="d : ${insights.due}">
                             <a th:href="${d.url}" th:text="${d.title}">Item</a>
                             <span class="muted" th:text="${d.topic} + ' · box ' + ${d.box}">topic</span>
                         </li>
                     </ul>
+                    <p class="muted" th:if="${insights.dueCount > insights.due.size()}"
+                       th:text="'Showing the ' + ${insights.due.size()} + ' most overdue of ' + ${insights.dueCount} + '.'">Showing the most overdue.</p>
                 </th:block>
             </section>
 

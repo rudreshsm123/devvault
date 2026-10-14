@@ -35,7 +35,7 @@
 
         <section class="guide-section">
             <h3>Question by question</h3>
-            <ol class="interview-review">
+            <ol class="interview-review no-progress-mark">
                 <li th:each="l : ${report.lines}" th:classappend="${l.right} ? 'is-right' : 'is-wrong'">
                     <p><strong th:text="${l.right} ? '✓ Right' : '✗ Wrong'">Right</strong>
                         <a th:href="${l.url}" th:text="${l.title}">Drill</a>

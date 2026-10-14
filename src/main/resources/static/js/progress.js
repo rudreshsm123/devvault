@@ -239,7 +239,7 @@
                 }
                 var kind = m[1] === 'problems' ? 'problem' : m[1] === 'drills' ? 'drill' : 'lesson';
                 var holder = a.closest('tr') || a.closest('li');
-                if (!holder) {
+                if (!holder || a.closest('.no-progress-mark')) {   // plan, review and report lists have their own markers
                     return;
                 }
                 if (isDone(data, kind, m[2])) {

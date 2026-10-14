@@ -30,7 +30,7 @@
                 <a href="/insights">Review &amp; Insights</a>.
             </p>
 
-            <ol class="plan-list">
+            <ol class="plan-list no-progress-mark">
                 <li th:each="e : ${plan.entries}" th:classappend="${e.done} ? 'is-done'">
                     <span class="plan-tick" th:text="${e.done} ? '✓' : '○'" aria-hidden="true"></span>
                     <a th:href="${e.url}" th:text="${e.title}">Item</a>
