@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Review &amp; Insights</h2>
+        </div>
+
+        <section class="guide-section" th:if="${insights == null}">
+            <p>
+                Sign in to unlock <strong>spaced repetition</strong> and your <strong>weak-topic dashboard</strong>.
+                Every drill or problem you get wrong comes back tomorrow; every one you get right comes back after a
+                longer gap (1, 2, 4, 8, 16, then 32 days), so you spend your time on what you are about to forget.
+            </p>
+            <p><a class="btn-primary" href="/login">Sign in</a> <a href="/register">Create an account</a></p>
+        </section>
+
+        <th:block th:if="${insights != null}">
+            <p class="muted">
+                Spaced repetition: a wrong answer returns tomorrow, a right answer returns after a longer gap
+                (1, 2, 4, 8, 16, then 32 days).
+            </p>
+
+            <div class="stat-row">
+                <div class="stat"><span class="stat-num" th:text="${insights.dueCount}">0</span><span class="stat-label">due for review</span></div>
+                <div class="stat"><span class="stat-num" th:text="${insights.accuracyPercent} + '%'">0%</span><span class="stat-label" th:text="'accuracy over ' + ${insights.totalAttempts} + ' answers'">accuracy</span></div>
+                <div class="stat"><span class="stat-num" th:text="${insights.currentStreak}">0</span><span class="stat-label">day streak</span></div>
+                <div class="stat"><span class="stat-num" th:text="${insights.longestStreak}">0</span><span class="stat-label">longest streak</span></div>
+            </div>
+
+            <section class="guide-section">
+                <h3>Due for review</h3>
+                <p class="muted" th:if="${insights.due.isEmpty()}">
+                    Nothing is due. Answer some <a href="/drills">drills</a> or <a href="/problems">problems</a> and they
+                    will be scheduled automatically.
+                </p>
+                <th:block th:unless="${insights.due.isEmpty()}">
+                    <p><a class="btn-primary" href="/review/next">Start reviewing</a></p>
+                    <ul class="result-list">
+                        <li th:each="d : ${insights.due}">
+                            <a th:href="${d.url}" th:text="${d.title}">Item</a>
+                            <span class="muted" th:text="${d.topic} + ' · box ' + ${d.box}">topic</span>
+                        </li>
+                    </ul>
+                </th:block>
+            </section>
+
+            <section class="guide-section">
+                <h3>Weak topics</h3>
+                <p class="muted" th:if="${insights.weakTopics.isEmpty()}">
+                    No weak topics yet. A topic shows up here after at least 3 answers with under 70% right.
+                </p>
+                <ul class="result-list" th:unless="${insights.weakTopics.isEmpty()}">
+                    <li th:each="t : ${insights.weakTopics}">
+                        <strong th:text="${t.topic}">Topic</strong>
+                        <span class="muted" th:text="${t.accuracyPercent} + '% right (' + ${t.correct} + ' of ' + ${t.attempts} + ')'">0%</span>
+                        <a th:href="@{/drills(topic=${t.topic})}">Practise drills</a>
+                        <a th:href="@{/problems(topic=${t.topic})}">Problems</a>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="guide-section">
+                <h3>Accuracy by topic</h3>
+                <p class="muted" th:if="${insights.topics.isEmpty()}">Answer a few drills to see your accuracy per topic.</p>
+                <div class="topic-bar" th:each="t : ${insights.topics}">
+                    <div class="topic-bar-label">
+                        <span th:text="${t.topic}">Topic</span>
+                        <span class="muted" th:text="${t.accuracyPercent} + '% · ' + ${t.attempts} + ' answers'">0%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" th:classappend="${t.weak} ? 'is-weak'" th:style="'width:' + ${t.accuracyPercent} + '%'"></div></div>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h3>Last 12 weeks</h3>
+                <div class="heatmap" role="img" aria-label="Answers per day over the last 12 weeks">
+                    <span th:each="day : ${insights.activity}" th:class="'heat heat-' + ${day.level}"
+                          th:title="${day.date} + ': ' + ${day.attempts} + ' answers'"></span>
+                </div>
+            </section>
+        </th:block>
+    </main>
+</div>
+</body>
+</html>

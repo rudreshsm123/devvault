@@ -221,3 +221,18 @@ tr.wrong { background-color: rgba(220, 38, 38, 0.05); }
 .drill-verdict .verdict-line { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
 .drill-verdict p { margin: 4px 0; }
 .pager { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 16px 0; }
+
+/* ---------- Review & Insights ---------- */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 14px 0; }
+.stat { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; }
+.stat-num { font-size: 1.8rem; font-weight: 800; color: #0f172a; }
+.stat-label { color: #64748b; font-size: 0.85rem; }
+.topic-bar { margin: 8px 0; }
+.topic-bar-label { display: flex; justify-content: space-between; gap: 10px; font-size: 0.92rem; margin-bottom: 3px; }
+.progress-fill.is-weak { background: #dc2626; }
+.heatmap { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 14px); grid-auto-columns: 14px; gap: 3px; overflow-x: auto; padding-bottom: 4px; }
+.heat { width: 14px; height: 14px; border-radius: 3px; background: #e2e8f0; }
+.heat-1 { background: #bbf7d0; }
+.heat-2 { background: #86efac; }
+.heat-3 { background: #22c55e; }
+.heat-4 { background: #15803d; }

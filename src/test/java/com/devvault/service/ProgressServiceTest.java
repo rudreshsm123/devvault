@@ -1,6 +1,8 @@
 package com.devvault.service;
 
 import com.devvault.entity.UserProgress;
+import com.devvault.entity.AttemptLog;
+import com.devvault.repository.AttemptLogRepository;
 import com.devvault.repository.UserProgressRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,9 @@ class ProgressServiceTest {
 
     @Mock
     private UserProgressRepository repository;
+
+    @Mock
+    private AttemptLogRepository attempts;
 
     @InjectMocks
     private ProgressService service;
@@ -75,5 +80,33 @@ class ProgressServiceTest {
 
         assertThat(added).isEqualTo(1);
         verify(repository).save(any(UserProgress.class));
+    }
+
+    @Test
+    void setResult_wrongSchedulesReviewTomorrowAndLogsTheAttempt() {
+        when(repository.findByUserIdAndKindAndItemId(1L, "drill", 7L)).thenReturn(Optional.empty());
+        long before = System.currentTimeMillis();
+
+        service.setResult(1L, "drill", 7L, "Drill 7", "/drills/7", "wrong");
+
+        org.mockito.ArgumentCaptor<UserProgress> saved = org.mockito.ArgumentCaptor.forClass(UserProgress.class);
+        verify(repository).save(saved.capture());
+        assertThat(saved.getValue().getBox()).isZero();
+        assertThat(saved.getValue().getDueAt()).isGreaterThanOrEqualTo(before + java.util.concurrent.TimeUnit.DAYS.toMillis(1));
+        org.mockito.ArgumentCaptor<AttemptLog> logged = org.mockito.ArgumentCaptor.forClass(AttemptLog.class);
+        verify(attempts).save(logged.capture());
+        assertThat(logged.getValue().isCorrect()).isFalse();
+    }
+
+    @Test
+    void setResult_rightAnswersMoveTheItemUpTheBoxes() {
+        UserProgress existing = new UserProgress(1L, "drill", 7L, "Drill 7", "/drills/7", 1L, "wrong");
+        existing.schedule(2, 0L);
+        when(repository.findByUserIdAndKindAndItemId(1L, "drill", 7L)).thenReturn(Optional.of(existing));
+
+        service.setResult(1L, "drill", 7L, "Drill 7", "/drills/7", "right");
+
+        assertThat(existing.getBox()).isEqualTo(3);
+        assertThat(existing.getResult()).isEqualTo("right");
     }
 }

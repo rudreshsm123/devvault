@@ -42,6 +42,12 @@ public class UserProgress {
     @Column(length = 10)
     private String result;
 
+    /** Spaced-repetition box (0 = new or just failed, higher = known better). Null for rows saved before reviews existed. */
+    private Integer box;
+
+    /** Epoch milliseconds when this item should be reviewed again. Null means it is not scheduled. */
+    private Long dueAt;
+
     public UserProgress() {
     }
 
@@ -69,4 +75,13 @@ public class UserProgress {
     public String getResult() { return result == null ? "right" : result; }
     public void setResult(String result) { this.result = result; }
     public void setDoneAt(long doneAt) { this.doneAt = doneAt; }
+
+    public int getBox() { return box == null ? 0 : box; }
+    public Long getDueAt() { return dueAt; }
+
+    /** Schedules the next review of this item. */
+    public void schedule(int box, long dueAt) {
+        this.box = box;
+        this.dueAt = dueAt;
+    }
 }

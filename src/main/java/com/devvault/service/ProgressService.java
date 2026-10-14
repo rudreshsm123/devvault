@@ -1,6 +1,8 @@
 package com.devvault.service;
 
+import com.devvault.entity.AttemptLog;
 import com.devvault.entity.UserProgress;
+import com.devvault.repository.AttemptLogRepository;
 import com.devvault.repository.UserProgressRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +20,11 @@ public class ProgressService {
     private static final int MAX_TEXT = 255;
 
     private final UserProgressRepository repository;
+    private final AttemptLogRepository attempts;
 
-    public ProgressService(UserProgressRepository repository) {
+    public ProgressService(UserProgressRepository repository, AttemptLogRepository attempts) {
         this.repository = repository;
+        this.attempts = attempts;
     }
 
     public List<UserProgress> list(Long userId) {
@@ -57,13 +61,17 @@ public class ProgressService {
         if (result == null || !RESULTS.contains(result)) {
             throw new IllegalArgumentException("result must be 'right' or 'wrong'");
         }
-        Optional<UserProgress> existing = repository.findByUserIdAndKindAndItemId(userId, kind, itemId);
-        if (existing.isPresent()) {
-            existing.get().setResult(result);
-            existing.get().setDoneAt(System.currentTimeMillis());
-            repository.save(existing.get());
-        } else {
-            repository.save(new UserProgress(userId, kind, itemId, title, url, System.currentTimeMillis(), result));
+        long now = System.currentTimeMillis();
+        boolean correct = "right".equals(result);
+        UserProgress item = repository.findByUserIdAndKindAndItemId(userId, kind, itemId)
+                .orElseGet(() -> new UserProgress(userId, kind, itemId, title, url, now, result));
+        item.setResult(result);
+        item.setDoneAt(now);
+        int box = ReviewScheduler.nextBox(item.getBox(), correct);
+        item.schedule(box, ReviewScheduler.dueAt(box, now));
+        repository.save(item);
+        if (!"lesson".equals(kind)) {
+            attempts.save(new AttemptLog(userId, kind, itemId, correct, now));
         }
     }
 
