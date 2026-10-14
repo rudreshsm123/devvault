@@ -26,6 +26,7 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 - **AI explainer.** After a wrong drill answer, signed-in learners can ask for an explanation written for their specific answer. It is off by default and always falls back to the drill's built-in explanation.
   - `AI_PROVIDER=claude` uses hosted Claude through the Anthropic Java SDK (set `ANTHROPIC_API_KEY`; the model defaults to `claude-opus-5-5`, override with `AI_CLAUDE_MODEL`, for example `claude-haiku-5-5` for lower cost).
   - `AI_PROVIDER=ollama` uses a small model on your own machine (`ollama pull qwen2.5:3b`), with no key and no internet. On a laptop with an old NVIDIA GPU (for example an MX230) Ollama's GPU backend can crash with "unsupported toolchain"; start it CPU-only with `CUDA_VISIBLE_DEVICES=-1 ollama serve`. Expect 30 to 40 seconds per explanation on a CPU.
+  - `AI_PROVIDER=openai` uses a hosted chat-completions service with a free tier, Google Gemini by default (get a key at https://aistudio.google.com, then set `AI_API_KEY`). For Groq set `AI_BASE_URL=https://api.groq.com/openai/v1`, `AI_MODEL=<a Groq model id>` and `AI_LABEL=groq`. Free-tier limits are set by the provider and can change, and when they run out the built-in explanation is used.
   - Requests are limited per user (20 an hour), the learner's text is fenced as untrusted data in the prompt, and the answer is shown as plain text.
 
 ## Screenshots
