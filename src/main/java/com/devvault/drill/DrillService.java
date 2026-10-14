@@ -23,6 +23,10 @@ public class DrillService {
 
     private final List<Drill> drills = DrillCatalog.build();
 
+    /** Topic name -> ids of every drill in it, in id order. */
+    private final Map<String, List<Integer>> idsByTopic = drills.stream().collect(Collectors.groupingBy(
+            Drill::topic, TreeMap::new, Collectors.mapping(Drill::id, Collectors.toList())));
+
     public int count() {
         return drills.size();
     }
@@ -38,6 +42,10 @@ public class DrillService {
     /** Topic name -> how many drills it has, in alphabetical order. */
     public Map<String, Long> topics() {
         return drills.stream().collect(Collectors.groupingBy(Drill::topic, TreeMap::new, Collectors.counting()));
+    }
+
+    public Map<String, List<Integer>> idsByTopic() {
+        return idsByTopic;
     }
 
     public Page search(String topic, String difficulty, String q, int page) {

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Today's plan</h2>
+        </div>
+
+        <section class="guide-section" th:if="${plan == null}">
+            <p>
+                Sign in to get a <strong>daily plan of 10 questions</strong>: reviews that are due, questions from
+                your weak topics, and new questions from the topics you have practised least. It is saved for the
+                day, so it does not change while you work through it.
+            </p>
+            <p><a class="btn-primary" href="/login">Sign in</a> <a href="/register">Create an account</a></p>
+        </section>
+
+        <th:block th:if="${plan != null}">
+            <p class="muted" th:text="${#temporals.format(plan.day, 'EEEE, d MMMM yyyy')} + ' · ' + ${plan.doneCount} + ' of ' + ${plan.total} + ' done'">Today</p>
+            <div class="progress-track plan-track">
+                <div class="progress-fill" th:style="'width:' + (${plan.total} == 0 ? 0 : ${plan.doneCount} * 100 / ${plan.total}) + '%'"></div>
+            </div>
+
+            <p class="plan-complete" th:if="${plan.complete}">
+                Plan complete. Come back tomorrow for a new one, or check
+                <a href="/insights">Review &amp; Insights</a>.
+            </p>
+
+            <ol class="plan-list">
+                <li th:each="e : ${plan.entries}" th:classappend="${e.done} ? 'is-done'">
+                    <span class="plan-tick" th:text="${e.done} ? '✓' : '○'" aria-hidden="true"></span>
+                    <a th:href="${e.url}" th:text="${e.title}">Item</a>
+                    <span class="plan-tag" th:classappend="'plan-' + ${e.source}"
+                          th:text="${e.source == 'review'} ? 'Review' : (${e.source == 'weak'} ? 'Weak topic' : 'New')">New</span>
+                    <span class="muted" th:text="${e.topic}">Topic</span>
+                </li>
+            </ol>
+            <p class="muted" th:if="${plan.entries.isEmpty()}">
+                Nothing to plan yet. Try a few <a href="/drills">drills</a> first.
+            </p>
+            <p class="muted">
+                An item counts as done when you answer it today. Right answers come back later and wrong answers come
+                back tomorrow, so the plan changes from day to day.
+            </p>
+        </th:block>
+    </main>
+</div>
+</body>
+</html>

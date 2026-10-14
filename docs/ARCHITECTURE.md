@@ -4,11 +4,12 @@ This page explains how DevVault is put together and why. The diagrams are [Merma
 
 - [1. Request flow](#1-request-flow)
 - [2. Spaced repetition and the weakness dashboard](#2-spaced-repetition-and-the-weakness-dashboard)
-- [3. The AI explainer](#3-the-ai-explainer)
-- [4. Practice drills](#4-practice-drills)
-- [5. Testing, CI and deployment](#5-testing-ci-and-deployment)
-- [6. Decisions and trade-offs](#6-decisions-and-trade-offs)
-- [7. Known limitations](#7-known-limitations)
+- [3. The daily plan](#3-the-daily-plan)
+- [4. The AI explainer](#4-the-ai-explainer)
+- [5. Practice drills](#5-practice-drills)
+- [6. Testing, CI and deployment](#6-testing-ci-and-deployment)
+- [7. Decisions and trade-offs](#7-decisions-and-trade-offs)
+- [8. Known limitations](#8-known-limitations)
 
 ## 1. Request flow
 
@@ -77,7 +78,30 @@ Design notes:
 - Topics are not stored on the attempt. They are looked up when the page is built, so a drill or problem that is recategorised is reflected immediately and the table stays small.
 - Signed-out visitors keep their progress in the browser only, so scheduling and insights need an account. That is deliberate: it keeps the public demo free of anything personal.
 
-## 3. The AI explainer
+## 3. The daily plan
+
+`/plan` gives a signed-in learner ten questions for today. The choice is made by `PlanBuilder`, a pure class with no Spring or database dependency, so every rule is unit tested.
+
+```mermaid
+flowchart TD
+    OPEN[Open /plan] --> SAVED{Plan already saved<br/>for today?}
+    SAVED -- yes --> SHOW[Show it, ticking items<br/>answered today]
+    SAVED -- no --> I[InsightsService<br/>due reviews, weak topics,<br/>answers per topic]
+    I --> B[PlanBuilder]
+    B --> R[1. up to 5 due reviews,<br/>most overdue first]
+    R --> W[2. up to 3 new questions<br/>from weak topics, in turn]
+    W --> N[3. new questions from the<br/>least practised topics, in turn]
+    N --> S[(Save as daily_plan_item rows)]
+    S --> SHOW
+```
+
+- New questions are never ones the learner has answered before, and no question appears twice.
+- The random choices use a seed made from the user and the date, so the same inputs always give the same plan.
+- The plan is **saved** the first time it is opened that day. Without that, answering a question would change what the builder picks (a reviewed item is no longer due, a new one is no longer new), and the list would shuffle while you work through it.
+- An item counts as done when the attempt log has an answer for it since the start of the day.
+- A unique key on user, day and position means that if two tabs open the plan at the same moment, one save wins and the other simply reads it back.
+
+## 4. The AI explainer
 
 After a wrong drill answer, a signed-in learner can ask for an explanation written for **their** answer.
 
@@ -111,11 +135,11 @@ Safeguards, because this endpoint can spend money and takes user text:
 
 Provider choice in practice: the hosted free tiers are faster and stronger, a small local model needs no key or internet but takes roughly 30 to 40 seconds on a laptop CPU, and the built-in explanation is always available as the floor.
 
-## 4. Practice drills
+## 5. Practice drills
 
 There are 10,000 auto-graded drills, but none is stored in the database. `DrillCatalog` builds them deterministically from a set of question **families** (algorithms, Java, application code), each of which generates variants with a computed correct answer. A drill's id (1 to 10,000) is therefore stable, and its answer is checked on the server by `DrillService`, so the right answer is never sent to the page until the learner has tried.
 
-## 5. Testing, CI and deployment
+## 6. Testing, CI and deployment
 
 ```mermaid
 flowchart LR
@@ -136,24 +160,27 @@ flowchart LR
 - **Context tests** start the whole application, one against MySQL (the `local` profile) and one against H2 (the `cloud` profile), which is why CI starts a MySQL container.
 - The Docker image is multi-stage: Maven builds the jar, and a JRE-only image runs it. The Java judge needs a JDK, so it stays off in that image.
 
-## 6. Decisions and trade-offs
+## 7. Decisions and trade-offs
 
 | Decision | Why | What it costs |
 |---|---|---|
 | Server-side rendering with Thymeleaf and a little vanilla JavaScript | Fast pages, no build step, nothing for a reviewer to install | Less interactive than a single-page app |
 | In-memory H2 on the public demo | Free hosting with a shareable link | Accounts and history vanish on restart |
 | Leitner boxes instead of SM-2 | Easy to explain and test, predictable intervals | Less adaptive than a per-item ease factor |
+| Daily plan saved, not recomputed | The list stays stable while you work through it, and "done" is easy to define | One more table; a plan built from stale data stays until tomorrow |
 | Attempt log kept separately from the latest result | Accurate accuracy and streak statistics without losing the simple "current state" row | One extra table that grows with use |
 | AI behind a one-method interface that never throws | New providers are one small class, and a failure can never break the page | Errors are logged, not shown to the learner |
 | Built-in explanation as the permanent fallback | The feature works with no key, no quota and no internet | The "AI" text can be generic |
 | Running submitted Java in a separate process, opt-in only | Real judging for local use | Not a full sandbox, so it is off on the public server |
 | Hosted AI is opt-in, off by default | The demo costs nothing and cannot be abused for free tokens | Recruiters see the built-in text unless a key is set |
 
-## 7. Known limitations
+## 8. Known limitations
 
 - No login throttling, e-mail verification or password reset yet.
 - Schema changes rely on Hibernate's automatic update rather than migration scripts (Flyway is on the roadmap).
 - The AI rate limiter and the attempt history on the demo live in memory, so they reset on restart.
-- Review scheduling is not available to signed-out visitors.
+- Review scheduling and the daily plan are not available to signed-out visitors.
+- The plan is only drills and due problems; lessons are not scheduled yet.
+- Opening `/plan` writes the day's plan on first view, which is a small side effect on a GET request (it is idempotent, and the demo's read-only filter does not block it).
 - Streaks use the server's time zone, not the learner's.
 - The AI explanation can be wrong, and the page says so; the local small model in particular may guess at why a learner made a mistake.
