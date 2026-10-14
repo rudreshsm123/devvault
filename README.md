@@ -75,6 +75,8 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 
 ## Architecture
 
+A longer write-up with diagrams of the review scheduler, the AI providers, CI and the trade-offs is in **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**. The short version:
+
 ```
 Browser
    |
@@ -99,8 +101,10 @@ Seed content (problems, lessons, snippets, notes, resources) is loaded by `Conte
 src/main/java/com/devvault
   config/       security, read-only filter, seeders, current-user advice
   config/seed/  all starter content (problems, lessons, notes, snippets, resources)
+  ai/           AI explainer: provider interface, Claude / OpenAI-compatible / Ollama providers, rate limiter
+  drill/        the 10,000 generated, auto-graded practice drills
   controller/   web and REST controllers
-  service/      business logic
+  service/      business logic (progress, review scheduling, insights)
   repository/   Spring Data repositories
   entity/       JPA entities
   exception/    NotFoundException + global exception handler
@@ -164,6 +168,8 @@ The `main` branch is deployed to Render from the `Dockerfile` (multi-stage build
 ## Roadmap
 
 - Flyway migrations instead of automatic schema updates.
+- Daily plan that mixes due reviews, weak topics and new material.
+- Timed interview mode with a score report.
 - Login rate limiting and password reset by e-mail.
 - Integration tests with Testcontainers against a real MySQL.
 - Roles, so only an admin can edit content in a hosted deployment.
