@@ -20,6 +20,14 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 - **What interviewers expect.** Each lesson and problem ends with what interviewers and recruiters look for.
 - **Real-website problems.** About 70 problems model features real sites ship: a rate limiter, circuit breaker, idempotent payments, seat booking with a waitlist, search ranking with TF-IDF, consistent hashing and more.
 
+## Learning features
+
+- **Spaced repetition.** Answers to drills and problems are scheduled with Leitner boxes (a wrong answer returns tomorrow, a right one after 2, 4, 8, 16, then 32 days). The **Review & Insights** page shows what is due, weak topics (at least 3 answers and under 70% right), accuracy per topic, a streak and a 12-week heatmap.
+- **AI explainer.** After a wrong drill answer, signed-in learners can ask for an explanation written for their specific answer. It is off by default and always falls back to the drill's built-in explanation.
+  - `AI_PROVIDER=claude` uses hosted Claude through the Anthropic Java SDK (set `ANTHROPIC_API_KEY`; the model defaults to `claude-opus-5-5`, override with `AI_CLAUDE_MODEL`, for example `claude-haiku-5-5` for lower cost).
+  - `AI_PROVIDER=ollama` uses a small model on your own machine (`ollama pull qwen2.5:3b`), with no key and no internet.
+  - Requests are limited per user (20 an hour), the learner's text is fenced as untrusted data in the prompt, and the answer is shown as plain text.
+
 ## Screenshots
 
 | Learn path lesson | Problem with line-by-line solution |

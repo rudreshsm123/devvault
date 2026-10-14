@@ -236,3 +236,7 @@ tr.wrong { background-color: rgba(220, 38, 38, 0.05); }
 .heat-2 { background: #86efac; }
 .heat-3 { background: #22c55e; }
 .heat-4 { background: #15803d; }
+
+/* ---------- AI explainer ---------- */
+.ai-box { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+.ai-text { white-space: pre-wrap; margin: 8px 0 0; }

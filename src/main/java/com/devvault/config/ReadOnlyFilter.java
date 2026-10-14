@@ -23,7 +23,7 @@ public class ReadOnlyFilter extends OncePerRequestFilter {
     private static final Set<String> SAFE_METHODS = Set.of("GET", "HEAD", "OPTIONS");
     /** Practice attempts, creating an account and a signed-in user's own progress are still allowed. */
     private static final Pattern ALLOWED_WRITES = Pattern.compile(
-            "^(/problems/[0-9]+/attempt(/clear)?|/register|/api/me/progress(/toggle|/import|/result)?|/api/judge/java|/api/drills/[0-9]+/check)$");
+            "^(/problems/[0-9]+/attempt(/clear)?|/register|/api/me/progress(/toggle|/import|/result)?|/api/me/ai/explain|/api/judge/java|/api/drills/[0-9]+/check)$");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

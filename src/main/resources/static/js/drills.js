@@ -29,6 +29,51 @@
         verdict.querySelector('.verdict-why').textContent = data.explanation;
     }
 
+    /* ---------- "Explain my answer with AI" (signed-in users only; the server falls back to the built-in text) ---------- */
+    var signedIn = !!document.querySelector('meta[name="devvault-user"]');
+    var aiBox = document.getElementById('ai-box');
+    var aiButton = document.getElementById('ai-btn');
+    var aiNote = document.getElementById('ai-note');
+    var aiText = document.getElementById('ai-text');
+    var lastAnswer = '';
+
+    function offerAi(answer) {
+        if (!aiBox) { return; }
+        lastAnswer = answer;
+        aiBox.hidden = false;
+        aiText.textContent = '';
+        if (signedIn) {
+            aiButton.hidden = false;
+            aiNote.textContent = '';
+        } else {
+            aiButton.hidden = true;
+            aiNote.textContent = 'Sign in to get a personal explanation of this answer.';
+        }
+    }
+
+    if (aiButton) {
+        aiButton.addEventListener('click', function () {
+            aiButton.disabled = true;
+            aiNote.textContent = 'Thinking...';
+            var headers = { 'Content-Type': 'application/json' };
+            if (csrfToken && csrfHeader) { headers[csrfHeader] = csrfToken; }
+            fetch('/api/me/ai/explain', {
+                method: 'POST', headers: headers, credentials: 'same-origin',
+                body: JSON.stringify({ drillId: Number(box.dataset.id), answer: lastAnswer })
+            }).then(function (r) {
+                return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+            }).then(function (res) {
+                if (!res.ok) { throw new Error(res.data.message || 'Request failed'); }
+                aiText.textContent = res.data.text;           // textContent: the model's output is never treated as HTML
+                aiNote.textContent = res.data.source === 'builtin'
+                    ? 'AI is not available right now, so this is the built-in explanation.'
+                    : 'Written by ' + res.data.source + '. AI can make mistakes, so check it against the lessons.';
+            }).catch(function (e) {
+                aiNote.textContent = e.message || 'Could not get an explanation, try again.';
+            }).then(function () { aiButton.disabled = false; });
+        });
+    }
+
     function check() {
         var answer = currentAnswer();
         if (!answer.trim()) {
@@ -51,6 +96,7 @@
             return r.json();
         }).then(function (data) {
             show(data.correct, data);
+            if (data.correct) { if (aiBox) { aiBox.hidden = true; } } else { offerAi(answer); }
             if (window.DevVaultProgress) {
                 window.DevVaultProgress.saveResult('drill', box.dataset.id, box.dataset.title, box.dataset.url,
                     data.correct ? 'right' : 'wrong', true).catch(function () { /* progress is optional */ });
