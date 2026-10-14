@@ -14,8 +14,13 @@
             <span th:text="${drill.topic}">Topic</span> &middot; <span th:text="${drill.difficulty}">Level</span>
         </p>
 
+        <p class="ai-hint" th:if="${aiEnabled}">
+            ✨ <strong>AI tutor:</strong> answer wrong and it explains <em>your</em> answer, not just the right one.
+            <span th:if="${currentUser == null}"><a href="/login">Sign in</a> to use it.</span>
+        </p>
+
         <section class="guide-section drill-box" id="drill"
-                 th:attr="data-id=${drill.id},data-kind=${drill.kind},data-title='Drill ' + ${drill.id} + ': ' + ${drill.title},data-url='/drills/' + ${drill.id}">
+                 th:attr="data-ai=${aiEnabled},data-id=${drill.id},data-kind=${drill.kind},data-title='Drill ' + ${drill.id} + ': ' + ${drill.title},data-url='/drills/' + ${drill.id}">
             <p class="drill-question" th:text="${drill.question}">Question</p>
             <pre class="note-content" th:if="${not #strings.isEmpty(drill.code)}"><code th:text="${drill.code}"></code></pre>
 
@@ -36,7 +41,11 @@
                 <p class="verdict-correct"></p>
                 <p class="verdict-why"></p>
                 <div class="ai-box" id="ai-box" hidden>
-                    <button type="button" id="ai-btn" class="btn-secondary">Explain my answer with AI</button>
+                    <p class="ai-signin" id="ai-signin" hidden>
+                        ✨ <a href="/login">Sign in</a> or <a href="/register">create an account</a> to get an AI
+                        explanation written for your answer.
+                    </p>
+                    <button type="button" id="ai-btn" class="btn-secondary">✨ Explain my answer with AI</button>
                     <p class="muted" id="ai-note"></p>
                     <p class="ai-text" id="ai-text"></p>
                 </div>

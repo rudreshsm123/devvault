@@ -271,3 +271,5 @@ tr.wrong { background-color: rgba(220, 38, 38, 0.05); }
 .interview-review li.is-right { border-color: #16a34a; background: rgba(22, 163, 74, 0.07); }
 .interview-review li.is-wrong { border-color: #dc2626; background: rgba(220, 38, 38, 0.06); }
 .interview-review p { margin: 4px 0; }
+.ai-hint { margin: 8px 0 14px; padding: 8px 12px; border-radius: 8px; background: #eef2ff; color: #3730a3; font-size: 0.92rem; }
+.ai-signin { margin: 4px 0; font-weight: 600; }

@@ -21,7 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DrillController.class)
-@Import({SecurityConfig.class, CurrentUserAdvice.class, GlobalExceptionHandler.class, DrillService.class})
+@Import({SecurityConfig.class, CurrentUserAdvice.class, GlobalExceptionHandler.class, DrillService.class,
+        com.devvault.ai.AiExplainer.class})
 class DrillControllerTest {
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.devvault.controller;
 
+import com.devvault.ai.AiExplainer;
 import com.devvault.drill.Drill;
 import com.devvault.drill.DrillResources;
 import com.devvault.drill.DrillService;
@@ -25,9 +26,11 @@ public class DrillController {
     }
 
     private final DrillService drills;
+    private final AiExplainer explainer;
 
-    public DrillController(DrillService drills) {
+    public DrillController(DrillService drills, AiExplainer explainer) {
         this.drills = drills;
+        this.explainer = explainer;
     }
 
     @GetMapping("/drills")
@@ -58,6 +61,7 @@ public class DrillController {
         model.addAttribute("previousId", id > 1 ? id - 1 : null);
         model.addAttribute("nextId", id < drills.count() ? id + 1 : null);
         model.addAttribute("total", drills.count());
+        model.addAttribute("aiEnabled", explainer.aiEnabled());
         return "drills/view";
     }
 

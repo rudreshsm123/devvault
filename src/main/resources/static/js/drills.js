@@ -37,18 +37,17 @@
     var aiText = document.getElementById('ai-text');
     var lastAnswer = '';
 
+    var aiEnabled = box.dataset.ai === 'true';           // false on a server without an AI provider
+    var aiSignin = document.getElementById('ai-signin');
+
     function offerAi(answer) {
-        if (!aiBox) { return; }
+        if (!aiBox || !aiEnabled) { return; }               // nothing to offer when AI is switched off
         lastAnswer = answer;
         aiBox.hidden = false;
         aiText.textContent = '';
-        if (signedIn) {
-            aiButton.hidden = false;
-            aiNote.textContent = '';
-        } else {
-            aiButton.hidden = true;
-            aiNote.textContent = 'Sign in to get a personal explanation of this answer.';
-        }
+        aiNote.textContent = '';
+        aiButton.hidden = !signedIn;
+        aiSignin.hidden = signedIn;
     }
 
     if (aiButton) {
