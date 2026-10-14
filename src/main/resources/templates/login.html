@@ -13,6 +13,7 @@
         <div class="auth-card">
             <p class="auth-ok" th:if="${param.registered}">Account created. Please sign in.</p>
             <p class="auth-error" th:if="${param.error}">Wrong username or password.</p>
+            <p class="auth-error" th:if="${param.locked}">Too many failed attempts. Please wait a few minutes and try again.</p>
             <p class="auth-ok" th:if="${param.logout}">You have been signed out.</p>
 
             <form method="post" th:action="@{/login}">

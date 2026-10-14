@@ -38,6 +38,15 @@ The same code runs in two modes, chosen by the Spring profile:
 
 Starter content (problems, lessons, notes, snippets, resources) is seeded before the web server accepts requests, so a visitor never sees a half-filled library.
 
+### Login throttling
+
+A `LoginThrottleFilter` runs before Spring Security checks the password, so a blocked client gets no signal about whether the password it tried was right. Failures are counted in a sliding 15-minute window by a pure class, `LoginThrottle` (no Spring dependency, so it is unit tested):
+
+- **5 failures per address and username** blocks that pair. Keying on the address as well as the username means a stranger cannot lock the real owner out from somewhere else.
+- **30 failures per address** blocks one address that sprays guesses over many usernames.
+- A successful sign-in clears that user's failures. The tracked-key count is capped so a flood of made-up usernames cannot exhaust memory.
+- Behind Render's proxy the `cloud` profile uses `server.forward-headers-strategy=native` so the address comes from `X-Forwarded-For`; Tomcat only trusts that header from internal proxy addresses.
+
 ## 2. Spaced repetition and the weakness dashboard
 
 Every time a signed-in learner answers a drill or a problem, the answer is saved twice: as the **latest result** of that item and as one row in an **append-only attempt log**. The latest result carries the review schedule. The log feeds the statistics.
@@ -205,12 +214,13 @@ flowchart LR
 | Attempt log kept separately from the latest result | Accurate accuracy and streak statistics without losing the simple "current state" row | One extra table that grows with use |
 | AI behind a one-method interface that never throws | New providers are one small class, and a failure can never break the page | Errors are logged, not shown to the learner |
 | Built-in explanation as the permanent fallback | The feature works with no key, no quota and no internet | The "AI" text can be generic |
+| Login throttling in memory, keyed by address and username | No new infrastructure, owner cannot be locked out by a stranger | Resets on restart; many addresses can still guess at one account |
 | Running submitted Java in a separate process, opt-in only | Real judging for local use | Not a full sandbox, so it is off on the public server |
 | Hosted AI is opt-in, off by default | The demo costs nothing and cannot be abused for free tokens | Recruiters see the built-in text unless a key is set |
 
 ## 9. Known limitations
 
-- No login throttling, e-mail verification or password reset yet.
+- Login throttling is in memory and per address: it resets on restart and does not stop many different addresses guessing at one account. There is no e-mail verification or password reset yet.
 - Schema changes rely on Hibernate's automatic update rather than migration scripts (Flyway is on the roadmap).
 - The AI rate limiter and the attempt history on the demo live in memory, so they reset on restart.
 - Review scheduling and the daily plan are not available to signed-out visitors.

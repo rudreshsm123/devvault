@@ -154,6 +154,7 @@ The `main` branch is deployed to Render from the `Dockerfile` (multi-stage build
 
 - Passwords are stored only as BCrypt hashes; length limited to 72 characters (BCrypt's real limit).
 - CSRF protection is on for every form and for the progress API.
+- **Login throttling:** 5 failed sign-ins for one username from one address within 15 minutes lock that pair out (even the right password is refused until the oldest failure ages out), and 30 failures from one address across any usernames lock the address. Keying on address plus username means a stranger cannot lock the real owner out from elsewhere. Blocked attempts get the same kind of redirect as wrong ones, so the response never reveals whether a password was right or whether an account exists. Behind Render's proxy the `cloud` profile reads the visitor address from `X-Forwarded-For`.
 - All SQL goes through JPA with bound parameters; templates escape output (`th:text`), and stored links are accepted only as same-site paths.
 - Secrets live in a git-ignored properties file or environment variables, never in the repository.
 - **Running other people's code is dangerous**, so the Java judge is a deliberate opt-in: `devvault.judge.java.enabled` is `true` for a local copy and `false` for the `cloud` profile (override with the `JUDGE_JAVA_ENABLED` environment variable, and switch the Docker runtime image from `eclipse-temurin:21-jre` to `21-jdk` because compiling needs a JDK). It limits code size, runs at most two judgements at once, caps the heap, times out each test and the whole run, and deletes its temp folder, but a separate process is **not** a full sandbox (code could still read files or use the network). Do not enable it on a server that strangers can reach unless you add OS-level isolation (a locked-down container, no network).
@@ -164,13 +165,13 @@ The `main` branch is deployed to Render from the `Dockerfile` (multi-stage build
 
 - **In-memory database for the public demo.** It costs nothing, but accounts and progress saved on the server disappear when the free host restarts. Run locally with MySQL for permanent data.
 - **Server-side rendering** keeps pages fast and simple, with no JavaScript build step; the small amount of JavaScript is progressive enhancement.
-- **No login throttling yet** and no e-mail verification or password reset.
+- **Login throttling is in memory** (it resets on restart) and per address, so a botnet using many addresses against one account is not covered. There is also no e-mail verification or password reset yet.
 - The older REST endpoints (`/api/notes`, `/api/problems`, ...) are intentionally open for API clients; they are not exposed for writes on the public demo.
 
 ## Roadmap
 
 - Flyway migrations instead of automatic schema updates.
-- Login rate limiting and password reset by e-mail.
+- Password reset by e-mail, and login throttling shared across servers (for example in Redis).
 - Integration tests with Testcontainers against a real MySQL.
 - Roles, so only an admin can edit content in a hosted deployment.
 
