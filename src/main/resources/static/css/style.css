@@ -130,6 +130,16 @@ body {
     font-size: 0.9em;
 }
 
+/* Code inside a dark <pre> block must keep the block's colours; the inline-code look above is for text only. */
+.guide-section pre code,
+.note-content code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+}
+
 .stat-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
