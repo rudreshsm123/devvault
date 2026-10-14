@@ -45,6 +45,20 @@ Most interview-prep sites show you a solution and stop. DevVault is built around
 |---|---|
 | ![Code challenge](docs/screenshots/code-challenge.png) | ![Certificate](docs/screenshots/certificate.png) |
 
+| Review & Insights: due reviews, weak topics, accuracy, streak | Daily plan: 10 saved questions a day |
+|---|---|
+| ![Review and insights](docs/screenshots/review-insights.png) | ![Daily plan](docs/screenshots/daily-plan.png) |
+
+| Timed mock interview (graded on the server) | Interview report |
+|---|---|
+| ![Mock interview](docs/screenshots/mock-interview.png) | ![Interview report](docs/screenshots/interview-report.png) |
+
+| AI explainer after a wrong answer (a small local model through Ollama) |
+|---|
+| ![AI explainer](docs/screenshots/ai-explainer.png) |
+
+*The last five screenshots use a demo account with four weeks of sample answers, written through the real scheduler so the dashboard has something to show.*
+
 ## Features
 
 - **Learn path** (`/learn`): 10 chapters and 60 lessons from "your first program" to system design and behavioural interviews.
