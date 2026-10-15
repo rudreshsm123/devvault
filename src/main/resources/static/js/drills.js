@@ -66,7 +66,8 @@
                 aiText.textContent = res.data.text;           // textContent: the model's output is never treated as HTML
                 if (res.data.source === 'builtin') {
                     // The AI did not answer: show the built-in text and stop offering a button that cannot help.
-                    aiNote.textContent = 'AI is not available right now, so this is the built-in explanation.';
+                    aiNote.textContent = 'AI is not available right now, so this is the built-in explanation.'
+                        + (res.data.error ? ' Reason: ' + res.data.error : '');
                     aiButton.hidden = true;
                 } else {
                     aiNote.textContent = 'Written by ' + res.data.source + '. AI can make mistakes, so check it against the lessons.';

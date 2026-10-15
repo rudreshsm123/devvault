@@ -8,4 +8,6 @@ import java.util.List;
 public interface AttemptLogRepository extends JpaRepository<AttemptLog, Long> {
 
     List<AttemptLog> findByUserIdAndAtGreaterThanEqual(Long userId, long at);
+
+    List<AttemptLog> findTop100ByUserIdOrderByAtDesc(Long userId);
 }

@@ -42,6 +42,12 @@ public class AiController {
                     .body(Map.of("message", "You have used the AI explainer a lot this hour. Try again later."));
         }
         AiExplainer.Explanation result = explainer.explain(drill.get(), request.answer());
-        return ResponseEntity.ok(Map.of("text", result.text(), "source", result.source()));
+        Map<String, Object> body = new java.util.HashMap<>();
+        body.put("text", result.text());
+        body.put("source", result.source());
+        if (result.error() != null) {
+            body.put("error", result.error());
+        }
+        return ResponseEntity.ok(body);
     }
 }

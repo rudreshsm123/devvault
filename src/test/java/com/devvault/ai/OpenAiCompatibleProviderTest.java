@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /** Talks to a fake chat-completions server, so no key or internet is needed. */
 class OpenAiCompatibleProviderTest {
@@ -59,23 +60,27 @@ class OpenAiCompatibleProviderTest {
     }
 
     @Test
-    void withoutAKeyNothingIsSentAndTheAnswerIsEmpty() throws IOException {
+    void withoutAKeyNothingIsSentAndTheReasonSaysSo() throws IOException {
         AtomicInteger calls = new AtomicInteger();
         String url = start(200, "{}", new AtomicReference<>(), new AtomicReference<>(), new AtomicReference<>(), calls);
 
-        assertThat(new OpenAiCompatibleProvider(url, "m", "  ", "x").complete("s", "u")).isEmpty();
+        assertThatThrownBy(() -> new OpenAiCompatibleProvider(url, "m", "  ", "x").complete("s", "u"))
+                .isInstanceOf(AiUnavailableException.class).hasMessageContaining("AI_API_KEY");
         assertThat(calls.get()).isZero();
     }
 
     @Test
-    void quotaErrorsAndOddResponsesGiveAnEmptyAnswerInsteadOfThrowing() throws IOException {
-        String url = start(429, "{\"error\":\"quota\"}", new AtomicReference<>(), new AtomicReference<>(),
+    void quotaErrorsAndOddResponsesReportAReasonWithoutLeakingTheKey() throws IOException {
+        String quotaUrl = start(429, "{\"error\":\"quota\"}", new AtomicReference<>(), new AtomicReference<>(),
                 new AtomicReference<>(), new AtomicInteger());
-        assertThat(new OpenAiCompatibleProvider(url, "m", "k", "x").complete("s", "u")).isEmpty();
+        assertThatThrownBy(() -> new OpenAiCompatibleProvider(quotaUrl, "my-model", "k", "x").complete("s", "u"))
+                .isInstanceOf(AiUnavailableException.class).hasMessageContaining("my-model").hasMessageContaining("429");
 
         server.stop(0);
-        url = start(200, "{\"choices\":[]}", new AtomicReference<>(), new AtomicReference<>(),
+        String url = start(200, "{\"choices\":[]}", new AtomicReference<>(), new AtomicReference<>(),
                 new AtomicReference<>(), new AtomicInteger());
-        assertThat(new OpenAiCompatibleProvider(url, "m", "k", "x").complete("s", "u")).isEmpty();
+        String emptyUrl = url;
+        assertThatThrownBy(() -> new OpenAiCompatibleProvider(emptyUrl, "m", "k", "x").complete("s", "u"))
+                .isInstanceOf(AiUnavailableException.class).hasMessageContaining("no text");
     }
 }

@@ -51,7 +51,7 @@ public class OpenAiCompatibleProvider implements AiProvider {
     public String complete(String system, String user) {
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("AI_API_KEY is not set, using the built-in explanation");
-            return "";
+            throw new AiUnavailableException("AI_API_KEY is not set on the server (or the variable name has a stray space).");
         }
         try {
             Map<String, Object> body = Map.of(
@@ -69,11 +69,24 @@ public class OpenAiCompatibleProvider implements AiProvider {
                     && message.get("content") instanceof String content) {
                 return content.trim();
             }
-            return "";
+            throw new AiUnavailableException("The model returned no text (model \"" + model + "\").");
+        } catch (AiUnavailableException e) {
+            throw e;
         } catch (RuntimeException e) {
-            // Out of free quota, bad key, network error: the learner still gets the built-in explanation.
+            // Out of free quota, bad key, wrong model, network error: the learner still gets the built-in
+            // explanation, plus the reason so a misconfigured server is easy to diagnose.
             log.warn("Hosted AI call failed: {}", e.getMessage());
-            return "";
+            throw new AiUnavailableException(describe(e));
         }
+    }
+
+    /** Short reason with the key removed and the length capped. */
+    private String describe(RuntimeException e) {
+        String message = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
+        if (apiKey != null && !apiKey.isBlank()) {
+            message = message.replace(apiKey, "***");
+        }
+        message = message.replaceAll("\s+", " ").trim();
+        return "Model \"" + model + "\": " + (message.length() > 300 ? message.substring(0, 300) + "..." : message);
     }
 }

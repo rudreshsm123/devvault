@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+<div class="app-layout">
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <main class="content">
+        <div class="content-header">
+            <h2>Answer History</h2>
+        </div>
+
+        <section class="guide-section" th:if="${entries == null}">
+            <p>Sign in to see every drill and problem you have answered, and whether you got it right.</p>
+            <p><a class="btn-primary" href="/login">Sign in</a> <a href="/register">Create an account</a></p>
+        </section>
+
+        <th:block th:if="${entries != null}">
+            <p class="muted">Your 100 most recent answers, newest first.</p>
+            <p class="muted" th:if="${entries.isEmpty()}">
+                No answers yet. Try some <a href="/drills">drills</a> or <a href="/problems">problems</a>.
+            </p>
+            <ul class="result-list no-progress-mark" th:unless="${entries.isEmpty()}">
+                <li th:each="e : ${entries}">
+                    <span th:text="${e.correct} ? '✔ Right' : '✘ Wrong'"
+                          th:style="${e.correct} ? 'color:#15803d;font-weight:600' : 'color:#b91c1c;font-weight:600'">Right</span>
+                    <a th:if="${e.url != null}" th:href="${e.url}" th:text="${e.title}">Item</a>
+                    <span th:if="${e.url == null}" th:text="${e.title}">Item</span>
+                    <span class="muted"
+                          th:text="${e.topic} + ' · ' + ${#dates.format(new java.util.Date(e.at), 'd MMM yyyy HH:mm')}">topic</span>
+                </li>
+            </ul>
+        </th:block>
+    </main>
+</div>
+</body>
+</html>
