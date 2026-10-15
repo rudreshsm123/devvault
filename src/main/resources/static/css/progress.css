@@ -212,6 +212,9 @@ tr.wrong { background-color: rgba(220, 38, 38, 0.05); }
 
 /* ---------- Practice drills ---------- */
 .drill-question { font-weight: 600; margin: 0 0 10px; }
+/* Drill code: explicit light-on-dark colours so the code is always readable. */
+.drill-box pre.note-content { background: #0b1220 !important; color: #f8fafc !important; border: 1px solid #334155; font-size: 0.95rem; line-height: 1.6; }
+.drill-box pre.note-content code { background: transparent !important; color: #f8fafc !important; font-family: Consolas, "Courier New", monospace; }
 .drill-answer { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
 .drill-answer input[type="text"] { padding: 8px 10px; min-width: 240px; max-width: 100%; }
 .drill-choices { display: flex; flex-direction: column; gap: 6px; flex-basis: 100%; }
