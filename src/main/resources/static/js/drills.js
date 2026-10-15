@@ -64,9 +64,13 @@
             }).then(function (res) {
                 if (!res.ok) { throw new Error(res.data.message || 'Request failed'); }
                 aiText.textContent = res.data.text;           // textContent: the model's output is never treated as HTML
-                aiNote.textContent = res.data.source === 'builtin'
-                    ? 'AI is not available right now, so this is the built-in explanation.'
-                    : 'Written by ' + res.data.source + '. AI can make mistakes, so check it against the lessons.';
+                if (res.data.source === 'builtin') {
+                    // The AI did not answer: show the built-in text and stop offering a button that cannot help.
+                    aiNote.textContent = 'AI is not available right now, so this is the built-in explanation.';
+                    aiButton.hidden = true;
+                } else {
+                    aiNote.textContent = 'Written by ' + res.data.source + '. AI can make mistakes, so check it against the lessons.';
+                }
             }).catch(function (e) {
                 aiNote.textContent = e.message || 'Could not get an explanation, try again.';
             }).then(function () { aiButton.disabled = false; });
