@@ -41,3 +41,6 @@ application-local.properties
 
 ### Postman's own linked Git workspace (self-managed, not app source) ###
 /postman/
+
+### Personal notes (never publish) ###
+APPLICATION_KIT.md

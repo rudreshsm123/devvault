@@ -83,4 +83,44 @@ class OpenAiCompatibleProviderTest {
         assertThatThrownBy(() -> new OpenAiCompatibleProvider(emptyUrl, "m", "k", "x").complete("s", "u"))
                 .isInstanceOf(AiUnavailableException.class).hasMessageContaining("no text");
     }
+
+    /** Fails with 503 for the given model and answers normally for any other. */
+    private String startOverloaded(String overloadedModel, AtomicInteger calls) throws IOException {
+        server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            calls.incrementAndGet();
+            String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            boolean busy = body.contains("\"" + overloadedModel + "\"");
+            byte[] out = (busy ? "{\"error\":\"busy\"}"
+                    : "{\"choices\":[{\"message\":{\"content\":\"ok\"}}]}").getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().add("Content-Type", "application/json");
+            exchange.sendResponseHeaders(busy ? 503 : 200, out.length);
+            exchange.getResponseBody().write(out);
+            exchange.close();
+        });
+        server.start();
+        return "http://127.0.0.1:" + server.getAddress().getPort() + "/v1beta/openai/";
+    }
+
+    @Test
+    void anOverloadedModelIsRetriedOnceThenTheFallbackModelAnswers() throws IOException {
+        AtomicInteger calls = new AtomicInteger();
+        String url = startOverloaded("main-model", calls);
+
+        String reply = new OpenAiCompatibleProvider(url, "main-model", "k", "x", "backup-model", 0).complete("s", "u");
+
+        assertThat(reply).isEqualTo("ok");
+        assertThat(calls.get()).isEqualTo(3);   // main twice, then the backup once
+    }
+
+    @Test
+    void whenEveryModelIsOverloadedTheLastReasonIsReported() throws IOException {
+        AtomicInteger calls = new AtomicInteger();
+        String url = start(503, "{\"error\":\"busy\"}", new AtomicReference<>(), new AtomicReference<>(),
+                new AtomicReference<>(), calls);
+
+        assertThatThrownBy(() -> new OpenAiCompatibleProvider(url, "a", "k", "x", "b", 0).complete("s", "u"))
+                .isInstanceOf(AiUnavailableException.class).hasMessageContaining("\"b\"").hasMessageContaining("503");
+        assertThat(calls.get()).isEqualTo(4);
+    }
 }
